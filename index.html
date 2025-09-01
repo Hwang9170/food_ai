@@ -235,15 +235,20 @@
       </div>
       <nav class="spacer">
         <ul>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#how">How it works</a></li>
-          <li><a href="#tech">Tech</a></li>
-          <li><a href="#pilot">Pilot/KPI</a></li>
-          <li><a href="#faq">FAQ</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="#features" data-i18n="features">Features</a></li>
+          <li><a href="#how" data-i18n="how">How it works</a></li>
+          <li><a href="#tech" data-i18n="tech">Tech</a></li>
+          <li><a href="#pilot" data-i18n="pilot">Pilot/KPI</a></li>
+          <li><a href="#faq" data-i18n="faq">FAQ</a></li>
+          <li><a href="#contact" data-i18n="contact">Contact</a></li>
         </ul>
       </nav>
-      <a class="cta-min" href="#demo" aria-label="데모 보기">데모 보기</a>
+      <select id="langSel" aria-label="언어 선택" style="margin-left:16px;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);font-weight:700;">
+        <option value="ko">한국어</option>
+        <option value="en">English</option>
+        <option value="ar">العربية</option>
+      </select>
+      <a class="cta-min" href="#demo" aria-label="데모 보기" data-i18n="demoBtn">데모 보기</a>
     </div>
   </header>
 
@@ -252,17 +257,17 @@
     <section class="hero" id="home" aria-label="소개">
       <div class="hero-wrap">
         <div>
-          <span class="eyebrow">QR → ✓/!/✕ · Halal · Vegan · Allergy · Alternative booths · No app</span>
-          <h1 class="headline">당신이 먹을 수 있는 음식만<br/><span class="muted" aria-hidden="true">Only what you can eat</span></h1>
-          <p class="subline">QR 스캔 한 번으로 내 식이 제한에 맞는 메뉴만 골라드립니다. 결과는 <b>✓ 가능 / ! 주의 / ✕ 불가</b>로 한눈에, 대체 부스까지 안내합니다.</p>
+          <span class="eyebrow" data-i18n="heroEyebrow">QR → ✓/!/✕ · Halal · Vegan · Allergy · Alternative booths · No app</span>
+          <h1 class="headline" data-i18n="heroTitle">당신이 먹을 수 있는 음식만<br/><span class="muted" aria-hidden="true">Only what you can eat</span></h1>
+          <p class="subline" data-i18n="heroDesc">QR 스캔 한 번으로 내 식이 제한에 맞는 메뉴만 골라드립니다. 결과는 <b>✓ 가능 / ! 주의 / ✕ 불가</b>로 한눈에, 대체 부스까지 안내합니다.</p>
           <div class="cta-row" role="group" aria-label="주요 행동">
-            <a class="btn" href="#demo">데모 보기 (Show Demo)</a>
-            <a class="btn outline" href="#survey">30초 설문 (Survey)</a>
+            <a class="btn" href="#demo" data-i18n="demoBtn">데모 보기</a>
+            <a class="btn outline" href="#survey" data-i18n="surveyBtn">30초 설문</a>
           </div>
           <div class="chips mt-20" aria-label="신뢰 요소">
-            <span class="chip">✓ 한눈에 결과</span>
-            <span class="chip">🌐 다국어</span>
-            <span class="chip">🧭 대체 부스 추천</span>
+            <span class="chip" data-i18n="chipResult">✓ 한눈에 결과</span>
+            <span class="chip" data-i18n="chipLang">🌐 다국어</span>
+            <span class="chip" data-i18n="chipAlt">🧭 대체 부스 추천</span>
           </div>
         </div>
         <div>
@@ -315,25 +320,25 @@
     <!-- Problem & Solution -->
     <section id="features" aria-label="문제와 해결">
       <h2 class="section-title">문제 → 해결 (Problem → Solution)</h2>
-      <p class="section-sub">정보 부족 · 언어 장벽 · 운영 한계를 QR 웹앱과 자동 분석·번역, 대체 추천으로 해결합니다.</p>
+  <p class="section-sub" data-i18n="problemDesc">정보 부족 · 언어 장벽 · 운영 한계를 QR 웹앱과 자동 분석·번역, 대체 추천으로 해결합니다.</p>
 
       <div class="grid-3" aria-label="문제">
-        <div class="card hover"><h3 class="mini-title">정보 부족</h3><p class="hint">성분·조리공정·알레르겐 정보가 부족하여 안전 판단이 어려움</p></div>
-        <div class="card hover"><h3 class="mini-title">언어 장벽</h3><p class="hint">외국인 관광객은 한글 메뉴판/구두 설명만으로 이해가 어려움</p></div>
-        <div class="card hover"><h3 class="mini-title">운영 한계</h3><p class="hint">단기 행사 특성상 인증/교육/표준화에 비용·시간 부담</p></div>
+  <div class="card hover"><h3 class="mini-title" data-i18n="problem1">정보 부족</h3><p class="hint" data-i18n="problem1Desc">성분·조리공정·알레르겐 정보가 부족하여 안전 판단이 어려움</p></div>
+  <div class="card hover"><h3 class="mini-title" data-i18n="problem2">언어 장벽</h3><p class="hint" data-i18n="problem2Desc">외국인 관광객은 한글 메뉴판/구두 설명만으로 이해가 어려움</p></div>
+  <div class="card hover"><h3 class="mini-title" data-i18n="problem3">운영 한계</h3><p class="hint" data-i18n="problem3Desc">단기 행사 특성상 인증/교육/표준화에 비용·시간 부담</p></div>
       </div>
 
       <div class="grid-3 mt-20" aria-label="해결책">
-        <div class="card hover"><h3 class="mini-title">QR 웹앱</h3><p class="hint">설치 없이 즉시 사용 · ✓/!/✕로 한눈에 결과</p></div>
-        <div class="card hover"><h3 class="mini-title">자동 분석·번역</h3><p class="hint">문서 업로드→OCR·정규화·룰 평가·다국어 번역·배포</p></div>
-        <div class="card hover"><h3 class="mini-title">대체 추천 & 리포트</h3><p class="hint">안전한 부스 추천, 퍼널/만족도 리포트로 개선</p></div>
+  <div class="card hover"><h3 class="mini-title" data-i18n="solution1">QR 웹앱</h3><p class="hint" data-i18n="solution1Desc">설치 없이 즉시 사용 · ✓/!/✕로 한눈에 결과</p></div>
+  <div class="card hover"><h3 class="mini-title" data-i18n="solution2">자동 분석·번역</h3><p class="hint" data-i18n="solution2Desc">문서 업로드→OCR·정규화·룰 평가·다국어 번역·배포</p></div>
+  <div class="card hover"><h3 class="mini-title" data-i18n="solution3">대체 추천 & 리포트</h3><p class="hint" data-i18n="solution3Desc">안전한 부스 추천, 퍼널/만족도 리포트로 개선</p></div>
       </div>
     </section>
 
     <!-- How it works (Tabs) -->
     <section id="how" aria-label="사용 방법">
       <h2 class="section-title">How it works</h2>
-      <p class="section-sub">두 플로우로 간단합니다.</p>
+  <p class="section-sub" data-i18n="howDesc">두 플로우로 간단합니다.</p>
 
       <div class="tabs" role="tablist" aria-label="플로우 탭">
         <div class="tablist">
@@ -366,7 +371,7 @@
     <!-- Tech -->
     <section id="tech" aria-label="기술">
       <h2 class="section-title">Tech (요약)</h2>
-      <p class="section-sub">Front: HTML/CSS/JS(PWA) · Back: FastAPI · DB: PostgreSQL/Redis/S3 · OCR/번역: PaddleOCR/CLOVA/Google · Security: PII 최소화/RBAC/감사로그</p>
+  <p class="section-sub" data-i18n="techDesc">Front: HTML/CSS/JS(PWA) · Back: FastAPI · DB: PostgreSQL/Redis/S3 · OCR/번역: PaddleOCR/CLOVA/Google · Security: PII 최소화/RBAC/감사로그</p>
 
       <div class="arch" aria-label="아키텍처 다이어그램">
         <!-- Simple architecture diagram (inline SVG) -->
@@ -410,7 +415,7 @@
     <!-- Pilot & KPI -->
     <section id="pilot" aria-label="파일럿과 KPI">
       <h2 class="section-title">Pilot & KPI</h2>
-      <p class="section-sub">MVP → 다국어 확장 → 지자체 표준/데이터 연동으로 확장합니다.</p>
+  <p class="section-sub" data-i18n="pilotDesc">MVP → 다국어 확장 → 지자체 표준/데이터 연동으로 확장합니다.</p>
 
       <div class="kpis" aria-label="핵심 지표">
         <div class="kpi">
@@ -435,13 +440,13 @@
     <!-- Demo & Survey anchors -->
     <section id="demo" aria-label="데모">
       <h2 class="section-title">데모 보기 (Show Demo)</h2>
-      <p class="section-sub">실제 페이지 연결 전까지는 이 영역을 데모 안내/이미지로 사용하세요.</p>
+  <p class="section-sub" data-i18n="demoDesc">실제 페이지 연결 전까지는 이 영역을 데모 안내/이미지로 사용하세요.</p>
       <div class="card"><p class="hint">여기에 데모 링크/스크린샷/설명 등을 배치합니다.</p></div>
     </section>
 
     <section id="survey" aria-label="설문">
       <h2 class="section-title">30초 설문 (Survey)</h2>
-      <p class="section-sub">간단한 설문으로 서비스 개선에 참여해 주세요.</p>
+  <p class="section-sub" data-i18n="surveyDesc">간단한 설문으로 서비스 개선에 참여해 주세요.</p>
       <div class="card"><p class="hint">구글폼/설문 링크를 연결하세요.</p></div>
     </section>
 
@@ -449,45 +454,45 @@
     <section id="faq" aria-label="자주 묻는 질문">
       <h2 class="section-title">FAQ</h2>
       <details>
-        <summary>앱 설치가 필요한가요?</summary>
-        <p>아니요. QR 스캔 후 웹앱으로 바로 사용합니다 (PWA 캐시 지원).</p>
+        <summary data-i18n="faq1Q">앱 설치가 필요한가요?</summary>
+        <p data-i18n="faq1A">아니요. QR 스캔 후 웹앱으로 바로 사용합니다 (PWA 캐시 지원).</p>
       </details>
       <details>
-        <summary>다국어는 어떻게 지원하나요?</summary>
-        <p>핵심 경고/주의 문구 템플릿을 미리 번역·캐시합니다(한/영/중/일 + 아랍/말레이 옵션).</p>
+        <summary data-i18n="faq2Q">다국어는 어떻게 지원하나요?</summary>
+        <p data-i18n="faq2A">핵심 경고/주의 문구 템플릿을 미리 번역·캐시합니다(한/영/중/일 + 아랍/말레이 옵션).</p>
       </details>
       <details>
-        <summary>할랄 인증은 어떻게 확인하나요?</summary>
-        <p>점주 포털에서 기관/번호/만료일/증빙 스냅샷을 제출받아 검수 큐를 통해 표시합니다.</p>
+        <summary data-i18n="faq3Q">할랄 인증은 어떻게 확인하나요?</summary>
+        <p data-i18n="faq3A">점주 포털에서 기관/번호/만료일/증빙 스냅샷을 제출받아 검수 큐를 통해 표시합니다.</p>
       </details>
       <details>
-        <summary>오탐/누락은 어떻게 처리하나요?</summary>
-        <p>현장 신고/사진이 예외 큐로 들어와 검수 후 즉시 재배포합니다.</p>
+        <summary data-i18n="faq4Q">오탐/누락은 어떻게 처리하나요?</summary>
+        <p data-i18n="faq4A">현장 신고/사진이 예외 큐로 들어와 검수 후 즉시 재배포합니다.</p>
       </details>
       <details>
-        <summary>개인정보는 수집하나요?</summary>
-        <p>식이 프로필은 디바이스 세션에 보관하며 식별 정보는 수집하지 않습니다(PII 최소화).</p>
+        <summary data-i18n="faq5Q">개인정보는 수집하나요?</summary>
+        <p data-i18n="faq5A">식이 프로필은 디바이스 세션에 보관하며 식별 정보는 수집하지 않습니다(PII 최소화).</p>
       </details>
     </section>
 
     <!-- Contact -->
     <section id="contact" aria-label="연락처">
       <h2 class="section-title">Contact</h2>
-      <p class="section-sub">파일럿/도입 문의를 남겨주세요. 빠르게 답변드리겠습니다.</p>
+  <p class="section-sub" data-i18n="contactDesc">파일럿/도입 문의를 남겨주세요. 빠르게 답변드리겠습니다.</p>
       <form id="contactForm" novalidate>
         <input class="in" type="text" name="name" placeholder="이름 / Name" aria-label="이름" required />
         <input class="in" type="email" name="email" placeholder="이메일 / Email" aria-label="이메일" required />
         <textarea class="in" name="msg" rows="5" placeholder="메시지 / Message" aria-label="메시지" required></textarea>
         <div class="cta-row">
           <button class="btn" type="submit">보내기 (Send)</button>
-          <a class="btn outline" href="#home">위로 가기</a>
+          <a class="btn outline" href="#home" data-i18n="goTop">위로 가기</a>
         </div>
       </form>
     </section>
   </main>
 
   <footer>
-    © FoodBooth Filter. All rights reserved. · “당신이 먹을 수 있는 음식만 / Only what you can eat”
+  <span data-i18n="footer">© FoodBooth Filter. All rights reserved. · “당신이 먹을 수 있는 음식만 / Only what you can eat”</span>
   </footer>
 
   <div id="sr-live" aria-live="polite" class="visually-hidden" style="position:absolute;left:-9999px"></div>
@@ -497,12 +502,107 @@
     const hdr = document.getElementById('hdr');
     const navLinks = Array.from(document.querySelectorAll('header nav a'));
     const sections = Array.from(document.querySelectorAll('main section[id]'));
+    const langSel = document.getElementById('langSel');
 
+    // 다국어 텍스트 객체
+    const i18n = {
+      ko: {
+        features: '특징', how: '사용 방법', tech: '기술', pilot: '파일럿/KPI', faq: 'FAQ', contact: '연락처', demoBtn: '데모 보기', surveyBtn: '30초 설문',
+        heroEyebrow: 'QR → ✓/!/✕ · 할랄 · 비건 · 알레르기 · 대체 부스 · 앱 설치 불필요',
+        heroTitle: '당신이 먹을 수 있는 음식만', heroDesc: 'QR 스캔 한 번으로 내 식이 제한에 맞는 메뉴만 골라드립니다. 결과는 <b>✓ 가능 / ! 주의 / ✕ 불가</b>로 한눈에, 대체 부스까지 안내합니다.',
+        chipResult: '✓ 한눈에 결과', chipLang: '🌐 다국어', chipAlt: '🧭 대체 부스 추천',
+        problemDesc: '정보 부족 · 언어 장벽 · 운영 한계를 QR 웹앱과 자동 분석·번역, 대체 추천으로 해결합니다.',
+        problem1: '정보 부족', problem1Desc: '성분·조리공정·알레르겐 정보가 부족하여 안전 판단이 어려움',
+        problem2: '언어 장벽', problem2Desc: '외국인 관광객은 한글 메뉴판/구두 설명만으로 이해가 어려움',
+        problem3: '운영 한계', problem3Desc: '단기 행사 특성상 인증/교육/표준화에 비용·시간 부담',
+        solution1: 'QR 웹앱', solution1Desc: '설치 없이 즉시 사용 · ✓/!/✕로 한눈에 결과',
+        solution2: '자동 분석·번역', solution2Desc: '문서 업로드→OCR·정규화·룰 평가·다국어 번역·배포',
+        solution3: '대체 추천 & 리포트', solution3Desc: '안전한 부스 추천, 퍼널/만족도 리포트로 개선',
+        howDesc: '두 플로우로 간단합니다.',
+        techDesc: 'Front: HTML/CSS/JS(PWA) · Back: FastAPI · DB: PostgreSQL/Redis/S3 · OCR/번역: PaddleOCR/CLOVA/Google · Security: PII 최소화/RBAC/감사로그',
+        pilotDesc: 'MVP → 다국어 확장 → 지자체 표준/데이터 연동으로 확장합니다.',
+        demoDesc: '실제 페이지 연결 전까지는 이 영역을 데모 안내/이미지로 사용하세요.',
+        surveyDesc: '간단한 설문으로 서비스 개선에 참여해 주세요.',
+        faq1Q: '앱 설치가 필요한가요?', faq1A: '아니요. QR 스캔 후 웹앱으로 바로 사용합니다 (PWA 캐시 지원).',
+        faq2Q: '다국어는 어떻게 지원하나요?', faq2A: '핵심 경고/주의 문구 템플릿을 미리 번역·캐시합니다(한/영/중/일 + 아랍/말레이 옵션).',
+        faq3Q: '할랄 인증은 어떻게 확인하나요?', faq3A: '점주 포털에서 기관/번호/만료일/증빙 스냅샷을 제출받아 검수 큐를 통해 표시합니다.',
+        faq4Q: '오탐/누락은 어떻게 처리하나요?', faq4A: '현장 신고/사진이 예외 큐로 들어와 검수 후 즉시 재배포합니다.',
+        faq5Q: '개인정보는 수집하나요?', faq5A: '식이 프로필은 디바이스 세션에 보관하며 식별 정보는 수집하지 않습니다(PII 최소화).',
+        contactDesc: '파일럿/도입 문의를 남겨주세요. 빠르게 답변드리겠습니다.',
+        goTop: '위로 가기',
+        footer: '© FoodBooth Filter. All rights reserved. · “당신이 먹을 수 있는 음식만 / Only what you can eat”',
+      },
+      en: {
+        features: 'Features', how: 'How it works', tech: 'Tech', pilot: 'Pilot/KPI', faq: 'FAQ', contact: 'Contact', demoBtn: 'Show Demo', surveyBtn: 'Survey',
+        heroEyebrow: 'QR → ✓/!/✕ · Halal · Vegan · Allergy · Alternative booths · No app',
+        heroTitle: 'Only what you can eat', heroDesc: 'Scan QR to instantly filter menus for your dietary needs. Results: <b>✓ Yes / ! Caution / ✕ No</b> at a glance, with alternative booths.',
+        chipResult: '✓ Instant results', chipLang: '🌐 Multilingual', chipAlt: '🧭 Alternative booths',
+        problemDesc: 'Lack of info · Language barrier · Operational limits solved by QR webapp, auto analysis/translation, and booth recommendation.',
+        problem1: 'Lack of info', problem1Desc: 'Hard to judge safety due to missing ingredient/cooking/allergen info',
+        problem2: 'Language barrier', problem2Desc: 'Foreigners struggle with Korean-only menus/explanations',
+        problem3: 'Operational limits', problem3Desc: 'Short-term events can’t afford certification/education/standardization',
+        solution1: 'QR Webapp', solution1Desc: 'Instant use, no install · ✓/!/✕ at a glance',
+        solution2: 'Auto analysis/translation', solution2Desc: 'Upload docs→OCR·normalize·rule eval·multilingual translation·publish',
+        solution3: 'Alternative & Report', solution3Desc: 'Recommend safe booths, improve via funnel/satisfaction report',
+        howDesc: 'Just two flows.',
+        techDesc: 'Front: HTML/CSS/JS(PWA) · Back: FastAPI · DB: PostgreSQL/Redis/S3 · OCR/Translation: PaddleOCR/CLOVA/Google · Security: Minimal PII/RBAC/Audit log',
+        pilotDesc: 'MVP → Multilingual → Expand via local gov standard/data integration.',
+        demoDesc: 'Use this area for demo info/images until real page is linked.',
+        surveyDesc: 'Help us improve with a quick survey.',
+        faq1Q: 'Do I need to install an app?', faq1A: 'No. Just scan QR and use the webapp (PWA cache supported).',
+        faq2Q: 'How is multilingual supported?', faq2A: 'Key warning/caution templates are pre-translated/cached (KR/EN/CN/JP + AR/MY options).',
+        faq3Q: 'How is Halal certification checked?', faq3A: 'Booth portal submits agency/number/expiry/proof snapshot, shown after review.',
+        faq4Q: 'How are errors/omissions handled?', faq4A: 'On-site reports/photos go to exception queue, re-published after review.',
+        faq5Q: 'Is personal info collected?', faq5A: 'Diet profile is stored in device session, no identifying info collected (minimal PII).',
+        contactDesc: 'Leave a pilot/adoption inquiry. We’ll reply quickly.',
+        goTop: 'Go to top',
+        footer: '© FoodBooth Filter. All rights reserved. · “Only what you can eat”',
+      },
+      ar: {
+        features: 'الميزات', how: 'كيف يعمل', tech: 'التقنية', pilot: 'تجريبي/KPI', faq: 'الأسئلة الشائعة', contact: 'اتصل', demoBtn: 'عرض العرض', surveyBtn: 'استبيان',
+        heroEyebrow: 'QR → ✓/!/✕ · حلال · نباتي · حساسية · أكشاك بديلة · بدون تطبيق',
+        heroTitle: 'فقط ما يمكنك أكله', heroDesc: 'امسح رمز QR لتصفية القوائم حسب احتياجاتك الغذائية فورًا. النتائج: <b>✓ نعم / ! انتبه / ✕ لا</b> بنظرة واحدة، مع أكشاك بديلة.',
+        chipResult: '✓ نتائج فورية', chipLang: '🌐 متعدد اللغات', chipAlt: '🧭 أكشاك بديلة',
+        problemDesc: 'نقص المعلومات · حاجز اللغة · حدود التشغيل يتم حلها عبر تطبيق الويب QR، التحليل/الترجمة التلقائية، وتوصية الأكشاك.',
+        problem1: 'نقص المعلومات', problem1Desc: 'يصعب الحكم على السلامة بسبب نقص معلومات المكونات/الطبخ/الحساسية',
+        problem2: 'حاجز اللغة', problem2Desc: 'الأجانب يواجهون صعوبة مع القوائم/الشرح الكوري فقط',
+        problem3: 'حدود التشغيل', problem3Desc: 'الأحداث قصيرة الأجل لا تستطيع تحمل الشهادات/التعليم/التوحيد القياسي',
+        solution1: 'تطبيق ويب QR', solution1Desc: 'استخدام فوري بدون تثبيت · ✓/!/✕ بنظرة واحدة',
+        solution2: 'تحليل/ترجمة تلقائية', solution2Desc: 'رفع المستندات→OCR·تطبيع·تقييم القواعد·ترجمة متعددة اللغات·نشر',
+        solution3: 'بديل & تقرير', solution3Desc: 'توصية الأكشاك الآمنة، التحسين عبر تقرير القمع/الرضا',
+        howDesc: 'فقط خطوتان.',
+        techDesc: 'الواجهة: HTML/CSS/JS(PWA) · الخلفية: FastAPI · قاعدة البيانات: PostgreSQL/Redis/S3 · OCR/الترجمة: PaddleOCR/CLOVA/Google · الأمان: الحد الأدنى من PII/RBAC/سجل التدقيق',
+        pilotDesc: 'MVP → متعدد اللغات → التوسع عبر معيار/تكامل بيانات الحكومة المحلية.',
+        demoDesc: 'استخدم هذه المنطقة لمعلومات/صور العرض حتى يتم ربط الصفحة الحقيقية.',
+        surveyDesc: 'ساعدنا في التحسين من خلال استبيان سريع.',
+        faq1Q: 'هل أحتاج لتثبيت تطبيق؟', faq1A: 'لا. فقط امسح رمز QR واستخدم تطبيق الويب (دعم ذاكرة التخزين المؤقت PWA).',
+        faq2Q: 'كيف يتم دعم متعدد اللغات؟', faq2A: 'يتم ترجمة/تخزين قوالب التحذير/الانتباه الرئيسية مسبقًا (KR/EN/CN/JP + خيارات AR/MY).',
+        faq3Q: 'كيف يتم التحقق من شهادة الحلال؟', faq3A: 'بوابة الأكشاك ترسل الوكالة/الرقم/تاريخ الانتهاء/دليل الصورة، تظهر بعد المراجعة.',
+        faq4Q: 'كيف يتم التعامل مع الأخطاء/السهو؟', faq4A: 'تقارير/صور الموقع تذهب إلى قائمة الاستثناءات، يتم إعادة النشر بعد المراجعة.',
+        faq5Q: 'هل يتم جمع معلومات شخصية؟', faq5A: 'يتم تخزين ملف النظام الغذائي في جلسة الجهاز، لا يتم جمع معلومات تعريفية (الحد الأدنى من PII).',
+        contactDesc: 'اترك استفسارًا عن العرض/التبني. سنرد بسرعة.',
+        goTop: 'العودة للأعلى',
+        footer: '© FoodBooth Filter. جميع الحقوق محفوظة. · “فقط ما يمكنك أكله”',
+      }
+    };
+    function setLang(lang){
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-i18n]').forEach(el=>{
+        const key = el.getAttribute('data-i18n');
+        if(i18n[lang][key]) el.textContent = i18n[lang][key];
+      });
+    }
+    langSel.addEventListener('change', e=>{
+      setLang(langSel.value);
+    });
+    setLang('ko');
+
+    // 기존 스크립트 ...existing code...
+    // Header shrink & active nav
     const onScroll = () => {
       if (window.scrollY > 8) hdr.classList.add('shrink'); else hdr.classList.remove('shrink');
     };
     onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
-
     // IntersectionObserver for active nav
     const obs = new IntersectionObserver((entries)=>{
       entries.forEach(e=>{
@@ -513,7 +613,6 @@
       });
     }, {rootMargin: '-40% 0px -50% 0px', threshold: 0.1});
     sections.forEach(s=>obs.observe(s));
-
     // Tabs (How it works)
     const tabBtns = {
       owner: document.getElementById('tabbtn-owner'),
@@ -539,7 +638,6 @@
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown'){ idx = (idx+1)%order.length; selectTab(order[idx]); }
       if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp'){   idx = (idx-1+order.length)%order.length; selectTab(order[idx]); }
     });
-
     // KPI count up
     const formatVal = (v, pref, suff) => `${pref||''}${Math.round(v)}${suff||''}`;
     const kpiEls = Array.from(document.querySelectorAll('.kpi-val'));
@@ -563,7 +661,6 @@
       });
     }, {threshold: .6});
     kpiEls.forEach(el=>kpiObs.observe(el));
-
     // Smooth anchor focus
     navLinks.forEach(a=>{
       a.addEventListener('click', (e)=>{
@@ -575,7 +672,6 @@
         }
       });
     });
-
     // Contact form demo validation
     const form = document.getElementById('contactForm');
     function toast(msg){
