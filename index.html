@@ -1,90 +1,605 @@
-<!-- // build: one-file-landing v1 -->
+<!-- build: one-file-landing v1 -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="title" content="FoodBooth Filter - 글로벌 푸드 부스 필터링 서비스">
-  <meta name="description" content="QR 스캔만으로 할랄, 비건, 알러지 등 내게 맞는 음식만 추천! 다국어 지원, 대체 부스 안내, 앱 설치 불필요.">
-  <meta property="og:title" content="FoodBooth Filter - Only what you can eat">
-  <meta property="og:description" content="QR → ✓/!/✕ · Halal · Vegan · Allergy · Alternative booths · No app">
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="ko_KR">
-  <title>FoodBooth Filter - 글로벌 푸드 부스 필터링 서비스</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FoodBooth Filter — 당신이 먹을 수 있는 음식만 | Only what you can eat</title>
+  <meta name="description" content="QR 한 번으로 할랄·비건·알레르기 즉시 필터링(✓/!/✕)하고 대체 부스까지 추천하는 행사·축제용 웹앱. No app required." />
+  <meta property="og:title" content="FoodBooth Filter" />
+  <meta property="og:description" content="QR → ✓/!/✕ · Halal · Vegan · Allergy · Alternative booths · No app" />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#2d5cf6" />
   <style>
-    /* ====== 공통 스타일 ====== */
-    html { box-sizing: border-box; font-size: 16px; }
-    *, *:before, *:after { box-sizing: inherit; }
-    body {
-      margin: 0; padding: 0;
-      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-      background: var(--bg);
-      color: var(--fg);
-      transition: background 0.3s, color 0.3s;
-      min-width: 320px;
-      line-height: 1.6;
-    }
-    :root {
-      --primary: #2b7a78;
-      --accent: #f9a826;
-      --bg: #f7fafc;
-      --fg: #222;
-      --card-bg: #fff;
-      --card-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    :root{
+      --bg: #ffffff;
+      --fg: #0f172a;           /* slate-900 */
+      --muted: #475569;        /* slate-600 */
+      --brand: #2d5cf6;        /* indigo-ish */
+      --brand-2: #00c2a8;      /* teal accent */
+      --card: #f8fafc;         /* slate-50 */
+      --line: #e2e8f0;         /* slate-200 */
+      --shadow: 0 10px 30px rgba(2,6,23,.08);
       --radius: 16px;
-      --nav-bg: #fff;
-      --nav-fg: #222;
-      --nav-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      --footer-bg: #f0f4f8;
-      --footer-fg: #555;
-      --svg-filter: none;
     }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #181c1f;
-        --fg: #f7fafc;
-        --card-bg: #23272a;
-        --nav-bg: #23272a;
-        --nav-fg: #f7fafc;
-        --footer-bg: #181c1f;
-        --footer-fg: #aaa;
-        --card-shadow: 0 2px 16px rgba(0,0,0,0.18);
-        --svg-filter: brightness(1.2) invert(0.9);
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg: #0b1020;
+        --fg: #e5e7eb;
+        --muted: #9ca3af;
+        --brand: #7aa2ff;
+        --brand-2: #2cdac3;
+        --card: #0f172a;
+        --line: #1f2937;
+        --shadow: 0 10px 30px rgba(0,0,0,.35);
       }
     }
-    /* ...이하 각 섹션별 스타일 및 반응형, 접근성, 인터랙션 등 구현... */
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font: 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Apple SD Gothic Neo, "Malgun Gothic", "맑은 고딕", Arial, sans-serif;
+      color:var(--fg);
+      background:var(--bg);
+      scroll-behavior:smooth;
+      text-rendering: optimizeLegibility;
+    }
+    a{color:inherit;text-decoration:none}
+    img,svg{max-width:100%;height:auto}
+
+    /* Skip link */
+    .skip-link{
+      position:absolute; left:-9999px; top:auto;
+    }
+    .skip-link:focus{
+      left:16px; top:16px; z-index:10000; background:var(--brand); color:#fff; padding:8px 12px; border-radius:8px;
+      outline: none;
+    }
+
+    /* Header */
+    header{
+      position:sticky; top:0; z-index:999;
+      backdrop-filter: saturate(1.1) blur(10px);
+      background: color-mix(in srgb, var(--bg) 70%, transparent);
+      border-bottom:1px solid var(--line);
+      transition: all .25s ease;
+    }
+    .nav{
+      max-width:1160px; margin:0 auto; padding:18px 20px; display:flex; align-items:center; gap:16px;
+    }
+    header.shrink .nav{padding:10px 20px}
+    .logo{
+      font-weight:800; letter-spacing:.2px; display:flex; align-items:center; gap:10px;
+    }
+    .logo-badge{
+      width:28px; height:28px; border-radius:10px; display:grid; place-items:center;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      color:#fff; font-weight:900;
+      box-shadow: var(--shadow);
+    }
+    nav ul{list-style:none; display:flex; gap:18px; margin:0; padding:0}
+    nav a{
+      padding:8px 10px; border-radius:10px; color:var(--muted);
+    }
+    nav a.active{color:var(--fg); background: color-mix(in srgb, var(--brand) 12%, transparent)}
+    .spacer{flex:1}
+    .cta-min{
+      display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2)); color:#fff; font-weight:700;
+      box-shadow: var(--shadow);
+    }
+    .cta-min:focus-visible{outline:3px solid color-mix(in srgb, var(--brand) 40%, #fff)}
+
+    /* Hero */
+    .hero{
+      position:relative; overflow:hidden;
+      background:
+        radial-gradient(1200px 600px at 100% -20%, color-mix(in srgb, var(--brand) 20%, transparent), transparent 60%),
+        radial-gradient(1000px 500px at -10% 0%, color-mix(in srgb, var(--brand-2) 18%, transparent), transparent 60%),
+        linear-gradient(180deg, color-mix(in srgb, var(--bg) 96%, transparent), var(--bg));
+      border-bottom: 1px solid var(--line);
+    }
+    .hero::before{
+      /* subtle dotted grid */
+      content:"";
+      position:absolute; inset:0;
+      background-image:
+        radial-gradient(color-mix(in srgb, var(--fg) 8%, transparent) 1px, transparent 1px);
+      background-size: 24px 24px;
+      mask-image: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,0.05) 60%, transparent);
+      pointer-events:none;
+    }
+    .hero-wrap{
+      max-width:1160px; margin:0 auto; padding:56px 20px 48px; display:grid; gap:30px;
+      grid-template-columns:1.05fr .95fr;
+    }
+    @media (max-width: 900px){
+      .hero-wrap{grid-template-columns:1fr}
+    }
+    .eyebrow{
+      display:inline-block; font-size:.88rem; color:var(--muted); background: color-mix(in srgb, var(--brand) 10%, transparent);
+      padding:6px 10px; border-radius:999px; border:1px solid color-mix(in srgb, var(--brand) 25%, transparent);
+    }
+    .headline{
+      font-weight:900; font-size: clamp(28px, 5vw, 48px); line-height:1.15; letter-spacing:-.3px; margin:10px 0 6px;
+    }
+    .subline{ color:var(--muted); font-size:1.05rem; }
+    .cta-row{ display:flex; flex-wrap:wrap; gap:12px; margin-top:18px}
+    .btn{
+      appearance:none; border:0; cursor:pointer; font-weight:800; border-radius:14px; padding:12px 16px;
+      background: var(--fg); color: var(--bg);
+    }
+    .btn.outline{ background:transparent; color:var(--fg); border:1.5px solid var(--line)}
+    .btn:hover{ transform: translateY(-1px) scale(1.01) }
+    .btn:focus-visible{ outline:3px solid color-mix(in srgb, var(--brand) 45%, transparent); outline-offset:2px}
+
+    .hero-cards{ display:grid; gap:14px; grid-template-columns: repeat(2, minmax(0,1fr)); align-content:start }
+    @media (max-width: 600px){ .hero-cards{ grid-template-columns:1fr } }
+    .card{
+      background:var(--card); border:1px solid var(--line); border-radius: var(--radius); padding:16px; box-shadow: var(--shadow);
+    }
+    .mini-title{ font-weight:800; margin:0 0 8px }
+    .hint{ color: var(--muted); font-size:.93rem }
+
+    .qrs{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:10px }
+    @media (max-width: 600px){ .qrs{ grid-template-columns:1fr } }
+
+    .inline-icon{ width:22px; height:22px; vertical-align:-5px }
+
+    /* Sections */
+    section{ max-width:1160px; margin:0 auto; padding:64px 20px }
+    .section-title{ font-size: clamp(22px, 3.5vw, 34px); font-weight:900; margin:0 0 16px; letter-spacing:-.2px }
+    .section-sub{ color:var(--muted); margin:0 0 26px }
+
+    /* Problem/Solution cards */
+    .grid-3{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:16px }
+    @media (max-width: 900px){ .grid-3{ grid-template-columns:1fr } }
+    .card.hover{ transition: transform .2s ease, box-shadow .2s ease}
+    .card.hover:hover{ transform: translateY(-4px); box-shadow: 0 12px 30px rgba(2,6,23,.12) }
+
+    /* Tabs (How it works) */
+    .tabs{ background:var(--card); border:1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding:16px }
+    .tablist{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px }
+    .tab{
+      border:1px solid var(--line); background: var(--bg); padding:10px 14px; border-radius: 12px; cursor:pointer; font-weight:800;
+    }
+    .tab[aria-selected="true"]{ background: color-mix(in srgb, var(--brand) 12%, transparent); border-color: color-mix(in srgb, var(--brand) 40%, var(--line)) }
+    .tabpanel{ display:none }
+    .tabpanel.active{ display:block }
+    .timeline{ display:grid; gap:12px }
+    .step{ display:grid; grid-template-columns: 42px 1fr; gap:12px; align-items:start; padding:12px; border:1px dashed var(--line); border-radius:12px; background: color-mix(in srgb, var(--card) 70%, transparent) }
+    .step-num{ width:42px; height:42px; border-radius:10px; display:grid; place-items:center; font-weight:900; background: linear-gradient(135deg, var(--brand), var(--brand-2)); color:#fff }
+
+    /* Features */
+    .grid-6{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:16px }
+    @media (max-width: 900px){ .grid-6{ grid-template-columns:1fr } }
+    .fea-title{ font-weight:800; margin:8px 0 6px }
+
+    /* Tech Architecture */
+    .arch{ background:var(--card); border:1px solid var(--line); border-radius: var(--radius); padding:16px; box-shadow: var(--shadow) }
+    .arch svg{ width:100%; height:auto; display:block }
+
+    /* KPI */
+    .kpis{ display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:14px }
+    @media (max-width: 900px){ .kpis{ grid-template-columns: repeat(2, minmax(0,1fr)) } }
+    .kpi{
+      text-align:center; background:var(--card); border:1px solid var(--line); border-radius: var(--radius); padding:20px; box-shadow: var(--shadow)
+    }
+    .kpi-val{ font-size: clamp(26px, 4vw, 36px); font-weight:900 }
+    .kpi-cap{ color: var(--muted) }
+
+    /* FAQ */
+    details{
+      background:var(--card); border:1px solid var(--line); border-radius: var(--radius); padding:14px 16px; box-shadow: var(--shadow)
+    }
+    details+details{ margin-top:10px }
+    summary{ cursor:pointer; font-weight:800 }
+    summary:focus-visible{ outline:3px solid color-mix(in srgb, var(--brand) 40%, transparent); border-radius:8px }
+
+    /* Contact */
+    form{ display:grid; gap:12px; max-width:720px }
+    .in{
+      display:block; width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--line);
+      background: var(--bg); color: var(--fg);
+    }
+    .in:focus-visible{ outline:3px solid color-mix(in srgb, var(--brand) 40%, transparent) }
+    .toast{
+      position: fixed; inset: auto 16px 16px auto; background: var(--fg); color: var(--bg);
+      padding: 12px 14px; border-radius:12px; box-shadow: var(--shadow); z-index:9999;
+      animation: toast .3s ease;
+    }
+    @keyframes toast{ from{opacity:0; transform: translateY(10px)} to{opacity:1; transform: none}}
+
+    footer{ border-top:1px solid var(--line); padding:24px 20px; color: var(--muted); text-align:center }
+
+    /* Utilities */
+    .muted{ color: var(--muted) }
+    .center{ text-align:center }
+    .chips{ display:flex; gap:8px; flex-wrap:wrap }
+    .chip{
+      font-size:.85rem; color: var(--muted); background: color-mix(in srgb, var(--brand) 10%, transparent);
+      border:1px solid color-mix(in srgb, var(--brand) 25%, transparent); border-radius:999px; padding:6px 10px
+    }
+    .mt-10{ margin-top:10px }
+    .mt-20{ margin-top:20px }
+    .mt-30{ margin-top:30px }
   </style>
 </head>
 <body>
-  <!-- ===== 헤더(고정 내비게이션) ===== -->
-  <!-- ...헤더 및 내비게이션 구현... -->
+  <a class="skip-link" href="#main">본문 바로가기</a>
+  <header id="hdr" aria-label="메인 헤더">
+    <div class="nav" role="navigation" aria-label="주요 메뉴">
+      <div class="logo" aria-label="FoodBooth Filter">
+        <span class="logo-badge" aria-hidden="true">FB</span> FoodBooth Filter
+      </div>
+      <nav class="spacer">
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#tech">Tech</a></li>
+          <li><a href="#pilot">Pilot/KPI</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+      <a class="cta-min" href="#demo" aria-label="데모 보기">데모 보기</a>
+    </div>
+  </header>
 
-  <!-- ===== 히어로(Hero) 섹션 ===== -->
-  <!-- ...히어로 섹션 구현... -->
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" id="home" aria-label="소개">
+      <div class="hero-wrap">
+        <div>
+          <span class="eyebrow">QR → ✓/!/✕ · Halal · Vegan · Allergy · Alternative booths · No app</span>
+          <h1 class="headline">당신이 먹을 수 있는 음식만<br/><span class="muted" aria-hidden="true">Only what you can eat</span></h1>
+          <p class="subline">QR 스캔 한 번으로 내 식이 제한에 맞는 메뉴만 골라드립니다. 결과는 <b>✓ 가능 / ! 주의 / ✕ 불가</b>로 한눈에, 대체 부스까지 안내합니다.</p>
+          <div class="cta-row" role="group" aria-label="주요 행동">
+            <a class="btn" href="#demo">데모 보기 (Show Demo)</a>
+            <a class="btn outline" href="#survey">30초 설문 (Survey)</a>
+          </div>
+          <div class="chips mt-20" aria-label="신뢰 요소">
+            <span class="chip">✓ 한눈에 결과</span>
+            <span class="chip">🌐 다국어</span>
+            <span class="chip">🧭 대체 부스 추천</span>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <h3 class="mini-title">DEMO / SURVEY QR</h3>
+            <p class="hint">행사장에서 이렇게 보입니다. 설치 없이 웹으로 바로 열립니다.</p>
+            <div class="qrs" aria-label="QR 코드 예시">
+              <!-- Demo QR (placeholder SVG) -->
+              <svg viewBox="0 0 160 160" role="img" aria-label="DEMO QR placeholder" style="background:#fff;border-radius:12px;border:1px solid var(--line)">
+                <rect x="0" y="0" width="160" height="160" fill="white"/>
+                <rect x="12" y="12" width="44" height="44" fill="black"/><rect x="104" y="12" width="44" height="44" fill="black"/><rect x="12" y="104" width="44" height="44" fill="black"/>
+                <g fill="black">
+                  <rect x="70" y="12" width="12" height="12"/><rect x="86" y="12" width="12" height="12"/>
+                  <rect x="70" y="28" width="12" height="12"/><rect x="86" y="44" width="12" height="12"/>
+                  <rect x="70" y="44" width="12" height="12"/>
+                  <rect x="86" y="28" width="12" height="12"/>
+                  <rect x="58" y="70" width="12" height="12"/><rect x="74" y="70" width="12" height="12"/><rect x="90" y="70" width="12" height="12"/>
+                  <rect x="58" y="86" width="12" height="12"/><rect x="90" y="86" width="12" height="12"/>
+                  <rect x="58" y="102" width="12" height="12"/><rect x="74" y="102" width="12" height="12"/><rect x="90" y="102" width="12" height="12"/>
+                  <rect x="116" y="70" width="12" height="12"/><rect x="116" y="86" width="12" height="12"/><rect x="116" y="102" width="12" height="12"/>
+                </g>
+                <text x="50%" y="150" text-anchor="middle" fill="black" font-size="12" font-weight="700">DEMO QR</text>
+              </svg>
+              <!-- Survey QR (placeholder SVG) -->
+              <svg viewBox="0 0 160 160" role="img" aria-label="SURVEY QR placeholder" style="background:#fff;border-radius:12px;border:1px solid var(--line)">
+                <rect x="0" y="0" width="160" height="160" fill="white"/>
+                <rect x="12" y="12" width="44" height="44" fill="black"/><rect x="104" y="12" width="44" height="44" fill="black"/><rect x="12" y="104" width="44" height="44" fill="black"/>
+                <g fill="black">
+                  <rect x="70" y="18" width="12" height="12"/><rect x="86" y="18" width="12" height="12"/>
+                  <rect x="70" y="34" width="12" height="12"/><rect x="86" y="50" width="12" height="12"/>
+                  <rect x="70" y="50" width="12" height="12"/>
+                  <rect x="86" y="34" width="12" height="12"/>
+                  <rect x="58" y="76" width="12" height="12"/><rect x="74" y="76" width="12" height="12"/><rect x="90" y="76" width="12" height="12"/>
+                  <rect x="58" y="92" width="12" height="12"/><rect x="90" y="92" width="12" height="12"/>
+                  <rect x="58" y="108" width="12" height="12"/><rect x="74" y="108" width="12" height="12"/><rect x="90" y="108" width="12" height="12"/>
+                  <rect x="116" y="76" width="12" height="12"/><rect x="116" y="92" width="12" height="12"/><rect x="116" y="108" width="12" height="12"/>
+                </g>
+                <text x="50%" y="150" text-anchor="middle" fill="black" font-size="12" font-weight="700">SURVEY QR</text>
+              </svg>
+            </div>
+          </div>
+          <div class="chips mt-10">
+            <span class="chip">“✓ 가능 / ! 주의 / ✕ 불가”</span>
+            <span class="chip">No app required</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <!-- ===== 문제 & 해결(Problem → Solution) 섹션 ===== -->
-  <!-- ...문제/해결 카드 섹션 구현... -->
+    <!-- Problem & Solution -->
+    <section id="features" aria-label="문제와 해결">
+      <h2 class="section-title">문제 → 해결 (Problem → Solution)</h2>
+      <p class="section-sub">정보 부족 · 언어 장벽 · 운영 한계를 QR 웹앱과 자동 분석·번역, 대체 추천으로 해결합니다.</p>
 
-  <!-- ===== How it works (플로우 탭형) ===== -->
-  <!-- ...탭/타임라인 섹션 구현... -->
+      <div class="grid-3" aria-label="문제">
+        <div class="card hover"><h3 class="mini-title">정보 부족</h3><p class="hint">성분·조리공정·알레르겐 정보가 부족하여 안전 판단이 어려움</p></div>
+        <div class="card hover"><h3 class="mini-title">언어 장벽</h3><p class="hint">외국인 관광객은 한글 메뉴판/구두 설명만으로 이해가 어려움</p></div>
+        <div class="card hover"><h3 class="mini-title">운영 한계</h3><p class="hint">단기 행사 특성상 인증/교육/표준화에 비용·시간 부담</p></div>
+      </div>
 
-  <!-- ===== Features(핵심 기능) ===== -->
-  <!-- ...핵심 기능 그리드 구현... -->
+      <div class="grid-3 mt-20" aria-label="해결책">
+        <div class="card hover"><h3 class="mini-title">QR 웹앱</h3><p class="hint">설치 없이 즉시 사용 · ✓/!/✕로 한눈에 결과</p></div>
+        <div class="card hover"><h3 class="mini-title">자동 분석·번역</h3><p class="hint">문서 업로드→OCR·정규화·룰 평가·다국어 번역·배포</p></div>
+        <div class="card hover"><h3 class="mini-title">대체 추천 & 리포트</h3><p class="hint">안전한 부스 추천, 퍼널/만족도 리포트로 개선</p></div>
+      </div>
+    </section>
 
-  <!-- ===== Tech(아키텍처 요약) ===== -->
-  <!-- ...아키텍처 다이어그램 SVG 포함... -->
+    <!-- How it works (Tabs) -->
+    <section id="how" aria-label="사용 방법">
+      <h2 class="section-title">How it works</h2>
+      <p class="section-sub">두 플로우로 간단합니다.</p>
 
-  <!-- ===== Pilot & KPI ===== -->
-  <!-- ...KPI 타임라인 및 숫자 애니메이션 구현... -->
+      <div class="tabs" role="tablist" aria-label="플로우 탭">
+        <div class="tablist">
+          <button class="tab" role="tab" aria-selected="true" aria-controls="tab-owner" id="tabbtn-owner">사장님(점주/운영)</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="tab-user" id="tabbtn-user">사용자</button>
+        </div>
+        <div id="tab-owner" class="tabpanel active" role="tabpanel" aria-labelledby="tabbtn-owner">
+          <div class="timeline">
+            <div class="step"><div class="step-num">1</div><div><b>포털 업로드</b> — 발주서/성분표/메뉴판 업로드(PDF·이미지·엑셀)</div></div>
+            <div class="step"><div class="step-num">2</div><div><b>OCR·정규화</b> — 표준 JSON으로 정제</div></div>
+            <div class="step"><div class="step-num">3</div><div><b>룰 평가 미리보기</b> — 할랄/비건/알레르겐 결과(✓/!/✕)</div></div>
+            <div class="step"><div class="step-num">4</div><div><b>검수·인증 등록</b> — 기관/번호/만료일 첨부</div></div>
+            <div class="step"><div class="step-num">5</div><div><b>배포</b> — 부스별 QR로 웹앱 공개</div></div>
+            <div class="step"><div class="step-num">6</div><div><b>신고 반영·리포트</b> — 예외 처리·재배포·지표 확인</div></div>
+          </div>
+        </div>
+        <div id="tab-user" class="tabpanel" role="tabpanel" aria-labelledby="tabbtn-user">
+          <div class="timeline">
+            <div class="step"><div class="step-num">1</div><div><b>QR 스캔</b> — 설치 없이 웹앱 열림</div></div>
+            <div class="step"><div class="step-num">2</div><div><b>프로필 선택</b> — 식이제한·언어·민감도</div></div>
+            <div class="step"><div class="step-num">3</div><div><b>결과 확인</b> — ✓ 가능 / ! 주의 / ✕ 불가 + 근거</div></div>
+            <div class="step"><div class="step-num">4</div><div><b>대체 추천·지도</b> — 안전도 높은 인근 부스 안내</div></div>
+            <div class="step"><div class="step-num">5</div><div><b>오류 신고</b> — 사진/메모 업로드</div></div>
+            <div class="step"><div class="step-num">6</div><div><b>캐시 스냅샷</b> — 네트워크 불안정 시에도 표시</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <!-- ===== FAQ ===== -->
-  <!-- ...FAQ 아코디언 구현... -->
+    <!-- Tech -->
+    <section id="tech" aria-label="기술">
+      <h2 class="section-title">Tech (요약)</h2>
+      <p class="section-sub">Front: HTML/CSS/JS(PWA) · Back: FastAPI · DB: PostgreSQL/Redis/S3 · OCR/번역: PaddleOCR/CLOVA/Google · Security: PII 최소화/RBAC/감사로그</p>
 
-  <!-- ===== Contact ===== -->
-  <!-- ...문의 폼 및 푸터 구현... -->
+      <div class="arch" aria-label="아키텍처 다이어그램">
+        <!-- Simple architecture diagram (inline SVG) -->
+        <svg viewBox="0 0 920 300" role="img" aria-label="브라우저 ↔ API ↔ DB/스토리지 ↔ OCR/번역 흐름">
+          <defs>
+            <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0" stop-color="var(--brand)"/>
+              <stop offset="1" stop-color="var(--brand-2)"/>
+            </linearGradient>
+          </defs>
+          <rect x="20" y="30" width="240" height="150" rx="16" ry="16" fill="none" stroke="var(--line)" stroke-width="2"/>
+          <text x="140" y="60" text-anchor="middle" fill="currentColor" font-weight="700">Browser (PWA)</text>
+          <text x="140" y="88" text-anchor="middle" fill="currentColor" font-size="12">QR · i18n · Offline cache</text>
+          <rect x="340" y="30" width="240" height="150" rx="16" ry="16" fill="none" stroke="var(--line)" stroke-width="2"/>
+          <text x="460" y="60" text-anchor="middle" fill="currentColor" font-weight="700">API (FastAPI)</text>
+          <text x="460" y="88" text-anchor="middle" fill="currentColor" font-size="12">Auth · Rules · Logs</text>
+          <rect x="660" y="20" width="240" height="80" rx="14" ry="14" fill="none" stroke="var(--line)" stroke-width="2"/>
+          <text x="780" y="50" text-anchor="middle" fill="currentColor" font-weight="700">DB (PostgreSQL/Redis)</text>
+          <rect x="660" y="120" width="240" height="80" rx="14" ry="14" fill="none" stroke="var(--line)" stroke-width="2"/>
+          <text x="780" y="150" text-anchor="middle" fill="currentColor" font-weight="700">Storage (S3)</text>
+
+          <rect x="420" y="210" width="160" height="70" rx="14" ry="14" fill="none" stroke="var(--line)" stroke-width="2"/>
+          <text x="500" y="240" text-anchor="middle" fill="currentColor" font-weight="700">OCR/Translate</text>
+          <text x="500" y="258" text-anchor="middle" fill="currentColor" font-size="12">Paddle · CLOVA · Google</text>
+
+          <!-- arrows -->
+          <path d="M260 105 L340 105" stroke="url(#g1)" stroke-width="3" marker-end="url(#arr)"/>
+          <path d="M580 90 L660 60" stroke="url(#g1)" stroke-width="3" marker-end="url(#arr)"/>
+          <path d="M580 120 L660 160" stroke="url(#g1)" stroke-width="3" marker-end="url(#arr)"/>
+          <path d="M460 180 L500 210" stroke="url(#g1)" stroke-width="3" marker-end="url(#arr)"/>
+          <path d="M500 210 L460 180" stroke="url(#g1)" stroke-width="3" marker-end="url(#arr)"/>
+          <defs>
+            <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <polygon points="0 0, 6 3, 0 6" fill="url(#g1)"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+    </section>
+
+    <!-- Pilot & KPI -->
+    <section id="pilot" aria-label="파일럿과 KPI">
+      <h2 class="section-title">Pilot & KPI</h2>
+      <p class="section-sub">MVP → 다국어 확장 → 지자체 표준/데이터 연동으로 확장합니다.</p>
+
+      <div class="kpis" aria-label="핵심 지표">
+        <div class="kpi">
+          <div class="kpi-val" data-target="30" data-prefix="" data-suffix="%↓">0</div>
+          <div class="kpi-cap">선택 실패율 감소</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-val" data-target="20" data-prefix="+" data-suffix="%p">0</div>
+          <div class="kpi-cap">대체 부스 전환</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-val" data-target="20" data-prefix="+" data-suffix="">0</div>
+          <div class="kpi-cap">NPS 상승</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-val" data-target="30" data-prefix="+" data-suffix="%">0</div>
+          <div class="kpi-cap">다국어 이해도</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Demo & Survey anchors -->
+    <section id="demo" aria-label="데모">
+      <h2 class="section-title">데모 보기 (Show Demo)</h2>
+      <p class="section-sub">실제 페이지 연결 전까지는 이 영역을 데모 안내/이미지로 사용하세요.</p>
+      <div class="card"><p class="hint">여기에 데모 링크/스크린샷/설명 등을 배치합니다.</p></div>
+    </section>
+
+    <section id="survey" aria-label="설문">
+      <h2 class="section-title">30초 설문 (Survey)</h2>
+      <p class="section-sub">간단한 설문으로 서비스 개선에 참여해 주세요.</p>
+      <div class="card"><p class="hint">구글폼/설문 링크를 연결하세요.</p></div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" aria-label="자주 묻는 질문">
+      <h2 class="section-title">FAQ</h2>
+      <details>
+        <summary>앱 설치가 필요한가요?</summary>
+        <p>아니요. QR 스캔 후 웹앱으로 바로 사용합니다 (PWA 캐시 지원).</p>
+      </details>
+      <details>
+        <summary>다국어는 어떻게 지원하나요?</summary>
+        <p>핵심 경고/주의 문구 템플릿을 미리 번역·캐시합니다(한/영/중/일 + 아랍/말레이 옵션).</p>
+      </details>
+      <details>
+        <summary>할랄 인증은 어떻게 확인하나요?</summary>
+        <p>점주 포털에서 기관/번호/만료일/증빙 스냅샷을 제출받아 검수 큐를 통해 표시합니다.</p>
+      </details>
+      <details>
+        <summary>오탐/누락은 어떻게 처리하나요?</summary>
+        <p>현장 신고/사진이 예외 큐로 들어와 검수 후 즉시 재배포합니다.</p>
+      </details>
+      <details>
+        <summary>개인정보는 수집하나요?</summary>
+        <p>식이 프로필은 디바이스 세션에 보관하며 식별 정보는 수집하지 않습니다(PII 최소화).</p>
+      </details>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" aria-label="연락처">
+      <h2 class="section-title">Contact</h2>
+      <p class="section-sub">파일럿/도입 문의를 남겨주세요. 빠르게 답변드리겠습니다.</p>
+      <form id="contactForm" novalidate>
+        <input class="in" type="text" name="name" placeholder="이름 / Name" aria-label="이름" required />
+        <input class="in" type="email" name="email" placeholder="이메일 / Email" aria-label="이메일" required />
+        <textarea class="in" name="msg" rows="5" placeholder="메시지 / Message" aria-label="메시지" required></textarea>
+        <div class="cta-row">
+          <button class="btn" type="submit">보내기 (Send)</button>
+          <a class="btn outline" href="#home">위로 가기</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    © FoodBooth Filter. All rights reserved. · “당신이 먹을 수 있는 음식만 / Only what you can eat”
+  </footer>
+
+  <div id="sr-live" aria-live="polite" class="visually-hidden" style="position:absolute;left:-9999px"></div>
 
   <script>
-    // ...스크롤 헤더 축소, 메뉴 활성화, 탭 전환, KPI 카운트업, FAQ 아코디언, 문의 폼 검증/토스트 등 JS 구현...
+    // Header shrink & active nav
+    const hdr = document.getElementById('hdr');
+    const navLinks = Array.from(document.querySelectorAll('header nav a'));
+    const sections = Array.from(document.querySelectorAll('main section[id]'));
+
+    const onScroll = () => {
+      if (window.scrollY > 8) hdr.classList.add('shrink'); else hdr.classList.remove('shrink');
+    };
+    onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
+
+    // IntersectionObserver for active nav
+    const obs = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          const id = e.target.id;
+          navLinks.forEach(a=>a.classList.toggle('active', a.getAttribute('href') === '#'+id));
+        }
+      });
+    }, {rootMargin: '-40% 0px -50% 0px', threshold: 0.1});
+    sections.forEach(s=>obs.observe(s));
+
+    // Tabs (How it works)
+    const tabBtns = {
+      owner: document.getElementById('tabbtn-owner'),
+      user:  document.getElementById('tabbtn-user')
+    };
+    const tabPanels = {
+      owner: document.getElementById('tab-owner'),
+      user:  document.getElementById('tab-user')
+    };
+    function selectTab(key){
+      for (const k of Object.keys(tabBtns)){
+        tabBtns[k].setAttribute('aria-selected', String(k===key));
+        tabPanels[k].classList.toggle('active', k===key);
+      }
+      tabBtns[key].focus();
+    }
+    tabBtns.owner.addEventListener('click', ()=>selectTab('owner'));
+    tabBtns.user .addEventListener('click', ()=>selectTab('user'));
+    // Keyboard support
+    document.querySelector('.tablist').addEventListener('keydown', (e)=>{
+      const order = ['owner','user'];
+      let idx = order.indexOf(document.activeElement.id.replace('tabbtn-',''));
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown'){ idx = (idx+1)%order.length; selectTab(order[idx]); }
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp'){   idx = (idx-1+order.length)%order.length; selectTab(order[idx]); }
+    });
+
+    // KPI count up
+    const formatVal = (v, pref, suff) => `${pref||''}${Math.round(v)}${suff||''}`;
+    const kpiEls = Array.from(document.querySelectorAll('.kpi-val'));
+    const kpiObs = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(!entry.isIntersecting) return;
+        const el = entry.target;
+        const target = Number(el.dataset.target || 0);
+        const pref   = el.dataset.prefix || '';
+        const suff   = el.dataset.suffix || '';
+        let start = 0;
+        const dur = 1100;
+        const t0 = performance.now();
+        const tick = (t)=>{
+          const p = Math.min(1, (t - t0)/dur);
+          el.textContent = formatVal(start + (target - start)*p, pref, suff);
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+        kpiObs.unobserve(el);
+      });
+    }, {threshold: .6});
+    kpiEls.forEach(el=>kpiObs.observe(el));
+
+    // Smooth anchor focus
+    navLinks.forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        const id = a.getAttribute('href');
+        if(id.startsWith('#') && id.length>1){
+          e.preventDefault();
+          const el = document.querySelector(id);
+          if (el){ el.scrollIntoView({behavior:'smooth', block:'start'}); el.setAttribute('tabindex','-1'); el.focus({preventScroll:true}); }
+        }
+      });
+    });
+
+    // Contact form demo validation
+    const form = document.getElementById('contactForm');
+    function toast(msg){
+      const t = document.createElement('div');
+      t.className = 'toast';
+      t.textContent = msg;
+      document.body.appendChild(t);
+      const sr = document.getElementById('sr-live'); sr.textContent = msg;
+      setTimeout(()=> t.remove(), 3000);
+    }
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const fd = new FormData(form);
+      const name = (fd.get('name')||'').toString().trim();
+      const email = (fd.get('email')||'').toString().trim();
+      const msg = (fd.get('msg')||'').toString().trim();
+      const okEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      if(!name || !okEmail || msg.length<4){
+        toast('입력 값을 확인해주세요. Please check your inputs.');
+        return;
+      }
+      form.reset();
+      toast('메시지가 제출되었습니다. Message sent (demo).');
+    });
   </script>
 </body>
 </html>
