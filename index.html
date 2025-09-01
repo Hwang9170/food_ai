@@ -90,6 +90,56 @@
       box-shadow: var(--shadow);
     }
     .cta-min:focus-visible{outline:3px solid color-mix(in srgb, var(--brand) 40%, #fff)}
+      /* 햄버거 메뉴 버튼 */
+      .hamburger {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        margin-left: 12px;
+      }
+      .hamburger span {
+        display: block;
+        height: 4px;
+        width: 100%;
+        background: #475569;
+        margin: 6px 0;
+        border-radius: 2px;
+        transition: 0.3s;
+      }
+      @media (max-width: 900px) {
+        .nav {
+          flex-wrap: wrap;
+        }
+        nav.spacer {
+          width: 100%;
+          order: 2;
+        }
+        nav ul {
+          flex-direction: column;
+          gap: 0;
+          background: var(--bg);
+          position: absolute;
+          top: 60px;
+          left: 0;
+          width: 100vw;
+          box-shadow: var(--shadow);
+          border-radius: 0 0 16px 16px;
+          display: none;
+          z-index: 1000;
+        }
+        nav ul.active {
+          display: flex;
+        }
+        .hamburger {
+          display: flex;
+          order: 3;
+        }
+      }
 
     /* Hero */
     .hero{
@@ -233,8 +283,13 @@
       <div class="logo" aria-label="FoodBooth Filter">
         <span class="logo-badge" aria-hidden="true">FB</span> FoodBooth Filter
       </div>
+      <button class="hamburger" id="hamburgerBtn" aria-label="메뉴 열기">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       <nav class="spacer">
-        <ul>
+        <ul id="navList">
           <li><a href="#features" data-i18n="features">Features</a></li>
           <li><a href="#how" data-i18n="how">How it works</a></li>
           <li><a href="#tech" data-i18n="tech">Tech</a></li>
@@ -252,6 +307,16 @@
     </div>
   </header>
 
+  <script>
+    // 햄버거 메뉴 토글
+    document.addEventListener('DOMContentLoaded', function() {
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const navList = document.getElementById('navList');
+      hamburgerBtn.addEventListener('click', function() {
+        navList.classList.toggle('active');
+      });
+    });
+  </script>
   <main id="main">
     <!-- HERO -->
     <section class="hero" id="home" aria-label="소개">
