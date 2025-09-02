@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>FoodBooth Filter — 당신이 먹을 수 있는 음식만 | Only what you can eat</title>
+  <title>FoodBooth Filter</title>
   <meta name="description" content="QR 한 번으로 할랄·비건·알레르기·맵기를 즉시 필터링하고 상태 라벨(적합/주의/부적합)로 안내하며 대체 부스까지 추천하는 행사·축제용 웹앱 데모." />
   <meta property="og:title" content="FoodBooth Filter" />
   <meta property="og:description" content="QR → status labels · Halal · Vegan · Allergy · Spicy · Alternative booths · No app" />
@@ -273,7 +273,7 @@
         <h2>문의</h2>
         <p class="sub">행사·축제에서 바로 써볼 수 있는 파트너를 찾고 있습니다.</p>
         <div class="card">
-          <p style="margin:0 0 10px" class="dim">이메일: <a href="mailto:team@example.com">team@example.com</a> (예시 값을 프로젝트 메일로 교체하세요)</p>
+          <p style="margin:0 0 10px" class="dim">이메일: <a href="mailto:team@example.com">jkimg9170@naver.com</a> </p>
           <button class="btn" id="openDemo2">데모 다시 보기</button>
         </div>
       </div>
@@ -345,6 +345,55 @@
 
     // Language toggle (KR/EN)
     const i18n = {
+      // ...기존 KR, EN, AR...
+      KR:{
+        // ...기존...
+        demoHead:'데모 — 필터 적용 미리보기',
+        filterTitle:'내 식단 설정',
+        halal:'할랄',
+        vegan:'비건',
+        nuts:'견과 알레르기',
+        dairy:'유제품 알레르기',
+        shellfish:'갑각류 알레르기',
+        spicyLabel:['순함','보통','매움','아주 매움'],
+        spicyTitle:'맵기 허용',
+        boothList:'부스 리스트',
+        boothDesc:'조건에 따라 상태가 변합니다. 부적합일 때는 아래에 대체 추천이 표시됩니다.',
+        altTitle:'대체 부스 추천',
+        close:'닫기'
+      },
+      EN:{
+        // ...기존...
+        demoHead:'Demo — Preview with filters',
+        filterTitle:'My dietary settings',
+        halal:'Halal',
+        vegan:'Vegan',
+        nuts:'Nut allergy',
+        dairy:'Dairy allergy',
+        shellfish:'Shellfish allergy',
+        spicyLabel:['Mild','Normal','Spicy','Very spicy'],
+        spicyTitle:'Spiciness allowed',
+        boothList:'Booth list',
+        boothDesc:'Status changes by condition. If not suitable, alternatives are shown below.',
+        altTitle:'Alternative booths',
+        close:'Close'
+      },
+      AR:{
+        // ...기존...
+        demoHead:'العرض التجريبي — معاينة مع الفلاتر',
+        filterTitle:'إعدادات نظامي الغذائي',
+        halal:'حلال',
+        vegan:'نباتي',
+        nuts:'حساسية المكسرات',
+        dairy:'حساسية الألبان',
+        shellfish:'حساسية المحار',
+        spicyLabel:['خفيف','عادي','حار','حار جدًا'],
+        spicyTitle:'درجة الحار المسموح بها',
+        boothList:'قائمة الأكشاك',
+        boothDesc:'تتغير الحالة حسب الشروط. إذا لم يكن مناسبًا، تظهر البدائل أدناه.',
+        altTitle:'أكشاك بديلة',
+        close:'إغلاق'
+      },
       KR:{
         heroTitle:'당신이 먹을 수 있는 음식만',
         heroDesc:'QR 한 번으로 <b>할랄·비건·알레르기·맵기</b>를 즉시 필터링하고, 각 부스의 상태를 <b>적합 · 주의 · 부적합</b>으로 명확히 안내합니다. 대체 부스도 자동 추천합니다. 앱 설치는 필요 없습니다.',
@@ -356,11 +405,18 @@
         heroDesc:'With one QR, instantly filter for <b>Halal · Vegan · Allergens · Spicy</b>. Each booth is labeled <b>OK · Caution · Not suitable</b>, with automatic alternatives. No app required.',
         demo:'Open Demo', how:'See how it works',
         labels:{ok:'OK', warn:'Caution', bad:'Not suitable'}
+      },
+      AR:{
+        heroTitle:'فقط ما يمكنك أكله',
+        heroDesc:'بواسطة رمز QR واحد، يمكنك تصفية <b>الحلال · النباتي · الحساسية · الحار</b> فورًا. كل كشك يحمل علامة <b>مناسب · انتبه · غير مناسب</b> مع اقتراحات بديلة تلقائية. لا حاجة لتثبيت تطبيق.',
+        demo:'افتح العرض التجريبي', how:'شاهد كيف يعمل',
+        labels:{ok:'مناسب', warn:'انتبه', bad:'غير مناسب'}
       }
     };
     let LANG = 'KR';
     const langBtn = document.getElementById('lang');
     const langBtn2 = document.getElementById('lang2');
+    const LANGS = ['KR','EN','AR'];
     function setLang(next){
       LANG = next; const t = i18n[next];
       document.querySelector('.hero h1').innerHTML = t.heroTitle;
@@ -368,10 +424,41 @@
       document.getElementById('openDemo').textContent = t.demo;
       document.querySelector('.hero .cta a').textContent = t.how;
       langBtn.textContent = next; if(langBtn2) langBtn2.textContent = next;
+      // 데모 모달 텍스트 변경
+      document.querySelector('#demo .logo').innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#2d5cf6"/></svg> ${t.demoHead}`;
+      document.querySelector('#demo .card h3').textContent = t.filterTitle;
+      const gridLabels = document.querySelectorAll('#demo .card .grid > div');
+      if(gridLabels.length>=5){
+        gridLabels[0].textContent = t.halal;
+        gridLabels[2].textContent = t.vegan;
+        gridLabels[4].textContent = t.nuts;
+        gridLabels[6].textContent = t.dairy;
+        gridLabels[8].textContent = t.shellfish;
+      }
+      document.querySelector('#demo label[for="spicy"] strong').textContent = t.spicyTitle;
+      const spicyLabel = document.getElementById('spicyLabel');
+      spicyLabel.textContent = t.spicyLabel[prefs.spicy];
+      const spicyDesc = document.querySelector('#demo .dim[style*="justify-content:space-between"]');
+      if(spicyDesc){
+        spicyDesc.innerHTML = t.spicyLabel.map(s=>`<span>${s}</span>`).join('');
+      }
+      document.querySelector('#demo section .card h3').textContent = t.boothList;
+      document.querySelector('#demo section .card .dim').textContent = t.boothDesc;
+      document.querySelector('#alt h3').textContent = t.altTitle;
+      document.getElementById('closeBottom').textContent = t.close;
+      document.getElementById('closeX').textContent = '';
+      document.getElementById('closeX').insertAdjacentHTML('beforeend', `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg> <span style="font-size:15px;vertical-align:middle">${t.close}</span>`);
       render(); // re-render labels in the demo list
+      document.documentElement.lang = next.toLowerCase();
     }
-    langBtn.addEventListener('click',()=> setLang(LANG==='KR'?'EN':'KR'));
-    if(langBtn2) langBtn2.addEventListener('click',()=> setLang(LANG==='KR'?'EN':'KR'));
+    langBtn.addEventListener('click',()=> {
+      const idx = LANGS.indexOf(LANG);
+      setLang(LANGS[(idx+1)%LANGS.length]);
+    });
+    if(langBtn2) langBtn2.addEventListener('click',()=> {
+      const idx = LANGS.indexOf(LANG);
+      setLang(LANGS[(idx+1)%LANGS.length]);
+    });
 
     // Drawer toggle
     const drawer = document.getElementById('drawer');
