@@ -1,766 +1,427 @@
-<!-- build: one-file-landing v1 -->
+<!-- FoodBooth Filter — Toss‑style one‑file demo landing (KR/EN). No external libs. -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>FoodBooth Filter — 당신이 먹을 수 있는 음식만 | Only what you can eat</title>
-  <meta name="description" content="QR 한 번으로 할랄·비건·알레르기 즉시 필터링(✓/!/✕)하고 대체 부스까지 추천하는 행사·축제용 웹앱. No app required." />
+  <meta name="description" content="QR 한 번으로 할랄·비건·알레르기·맵기 즉시 필터링(✓/!/✕)하고 대체 부스까지 추천하는 행사·축제용 웹앱 데모." />
   <meta property="og:title" content="FoodBooth Filter" />
-  <meta property="og:description" content="QR → ✓/!/✕ · Halal · Vegan · Allergy · Alternative booths · No app" />
+  <meta property="og:description" content="QR → ✓/!/✕ · Halal · Vegan · Allergy · Spicy · Alternative booths · No app" />
   <meta property="og:type" content="website" />
   <meta name="theme-color" content="#2d5cf6" />
   <style>
     :root{
-      --bg: #ffffff;
-      --fg: #0f172a;           /* slate-900 */
-      --muted: #475569;        /* slate-600 */
-      --brand: #2d5cf6;        /* indigo-ish */
-      --brand-2: #00c2a8;      /* teal accent */
-      --card: #f8fafc;         /* slate-50 */
-      --line: #e2e8f0;         /* slate-200 */
-      --shadow: 0 10px 30px rgba(2,6,23,.08);
-      --radius: 16px;
+      --bg:#ffffff;--ink:#0f172a;--muted:#64748b;--line:#e5e7eb;--card:#f8fafc;--primary:#2d5cf6;--primary-ink:#ffffff;
+      --ok:#16a34a;--warn:#f59e0b;--bad:#ef4444;--shadow:0 10px 30px rgba(2,6,23,.08);
+      --radius:22px;--radius-sm:14px;--radius-lg:28px;
     }
-    @media (prefers-color-scheme: dark){
-      :root{
-        --bg: #0b1020;
-        --fg: #e5e7eb;
-        --muted: #9ca3af;
-        --brand: #7aa2ff;
-        --brand-2: #2cdac3;
-        --card: #0f172a;
-        --line: #1f2937;
-        --shadow: 0 10px 30px rgba(0,0,0,.35);
-      }
-    }
-
     *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font: 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Apple SD Gothic Neo, "Malgun Gothic", "맑은 고딕", Arial, sans-serif;
-      color:var(--fg);
-      background:var(--bg);
-      scroll-behavior:smooth;
-      text-rendering: optimizeLegibility;
-    }
-    a{color:inherit;text-decoration:none}
-    img,svg{max-width:100%;height:auto}
-
-    /* Skip link */
-    .skip-link{
-      position:absolute; left:-9999px; top:auto;
-    }
-    .skip-link:focus{
-      left:16px; top:16px; z-index:10000; background:var(--brand); color:#fff; padding:8px 12px; border-radius:8px;
-      outline: none;
-    }
-
-    /* Header */
-    header{
-      position:sticky; top:0; z-index:999;
-      backdrop-filter: saturate(1.1) blur(10px);
-      background: color-mix(in srgb, var(--bg) 70%, transparent);
-      border-bottom:1px solid var(--line);
-      transition: all .25s ease;
-    }
-    .nav{
-      max-width:1160px; margin:0 auto; padding:18px 20px; display:flex; align-items:center; gap:16px;
-    }
-    header.shrink .nav{padding:10px 20px}
-    .logo{
-      font-weight:800; letter-spacing:.2px; display:flex; align-items:center; gap:10px;
-    }
-    .logo-badge{
-      width:28px; height:28px; border-radius:10px; display:grid; place-items:center;
-      background: linear-gradient(135deg, var(--brand), var(--brand-2));
-      color:#fff; font-weight:900;
-      box-shadow: var(--shadow);
-    }
-    nav ul{list-style:none; display:flex; gap:18px; margin:0; padding:0}
-    nav a{
-      padding:8px 10px; border-radius:10px; color:var(--muted);
-    }
-    nav a.active{color:var(--fg); background: color-mix(in srgb, var(--brand) 12%, transparent)}
-    .spacer{flex:1}
-    .cta-min{
-      display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px;
-      background: linear-gradient(135deg, var(--brand), var(--brand-2)); color:#fff; font-weight:700;
-      box-shadow: var(--shadow);
-    }
-    .cta-min:focus-visible{outline:3px solid color-mix(in srgb, var(--brand) 40%, #fff)}
-      /* 햄버거 메뉴 버튼 */
-      .hamburger {
-        display: none;
-        flex-direction: column;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-        background: none;
-        border: none;
-        cursor: pointer;
-        margin-left: 12px;
-      }
-      .hamburger span {
-        display: block;
-        height: 4px;
-        width: 100%;
-        background: #475569;
-        margin: 6px 0;
-        border-radius: 2px;
-        transition: 0.3s;
-      }
-      @media (max-width: 900px) {
-        .nav {
-          flex-wrap: wrap;
-        }
-        nav.spacer {
-          width: 100%;
-          order: 2;
-        }
-        nav ul {
-          flex-direction: column;
-          gap: 0;
-          background: var(--bg);
-          position: absolute;
-          top: 60px;
-          left: 0;
-          width: 100vw;
-          box-shadow: var(--shadow);
-          border-radius: 0 0 16px 16px;
-          display: none;
-          z-index: 1000;
-        }
-        nav ul.active {
-          display: flex;
-        }
-        .hamburger {
-          display: flex;
-          order: 3;
-        }
-      }
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Noto Sans KR','Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;line-height:1.5}
+    a{color:var(--primary);text-decoration:none}
+    .container{max-width:1120px;margin:0 auto;padding:0 20px}
+    .btn{display:inline-flex;gap:8px;align-items:center;justify-content:center;padding:14px 20px;border-radius:16px;background:var(--primary);color:var(--primary-ink);font-weight:700;border:1px solid #1e40af;box-shadow:var(--shadow);transition:.2s}
+    .btn:hover{transform:translateY(-1px);filter:brightness(1.02)}
+    .btn.ghost{background:#eef2ff;border-color:#c7d2fe;color:#1e40af}
+    .badge{padding:6px 10px;background:#eef2ff;color:#1e40af;border-radius:999px;font-weight:700;font-size:12px;border:1px solid #c7d2fe}
+    header{position:sticky;top:0;backdrop-filter:saturate(180%) blur(10px);background:rgba(255,255,255,.8);border-bottom:1px solid var(--line);z-index:50}
+    .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+    .nav .logo{display:flex;align-items:center;gap:10px;font-weight:800}
+    .nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
+    .nav a{padding:10px 12px;border-radius:12px;color:var(--ink)}
+    .nav a:hover{background:#f1f5f9}
 
     /* Hero */
-    .hero{
-      position:relative; overflow:hidden;
-      background:
-        radial-gradient(1200px 600px at 100% -20%, color-mix(in srgb, var(--brand) 20%, transparent), transparent 60%),
-        radial-gradient(1000px 500px at -10% 0%, color-mix(in srgb, var(--brand-2) 18%, transparent), transparent 60%),
-        linear-gradient(180deg, color-mix(in srgb, var(--bg) 96%, transparent), var(--bg));
-      border-bottom: 1px solid var(--line);
-    }
-    .hero::before{
-      /* subtle dotted grid */
-      content:"";
-      position:absolute; inset:0;
-      background-image:
-        radial-gradient(color-mix(in srgb, var(--fg) 8%, transparent) 1px, transparent 1px);
-      background-size: 24px 24px;
-      mask-image: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,0.05) 60%, transparent);
-      pointer-events:none;
-    }
-    .hero-wrap{
-      max-width:1160px; margin:0 auto; padding:56px 20px 48px; display:grid; gap:30px;
-      grid-template-columns:1.05fr .95fr;
-    }
-    @media (max-width: 900px){
-      .hero-wrap{grid-template-columns:1fr}
-    }
-    .eyebrow{
-      display:inline-block; font-size:.88rem; color:var(--muted); background: color-mix(in srgb, var(--brand) 10%, transparent);
-      padding:6px 10px; border-radius:999px; border:1px solid color-mix(in srgb, var(--brand) 25%, transparent);
-    }
-    .headline{
-      font-weight:900; font-size: clamp(28px, 5vw, 48px); line-height:1.15; letter-spacing:-.3px; margin:10px 0 6px;
-    }
-    .subline{ color:var(--muted); font-size:1.05rem; }
-    .cta-row{ display:flex; flex-wrap:wrap; gap:12px; margin-top:18px}
-    .btn{
-      appearance:none; border:0; cursor:pointer; font-weight:800; border-radius:14px; padding:12px 16px;
-      background: var(--fg); color: var(--bg);
-    }
-    .btn.outline{ background:transparent; color:var(--fg); border:1.5px solid var(--line)}
-    .btn:hover{ transform: translateY(-1px) scale(1.01) }
-    .btn:focus-visible{ outline:3px solid color-mix(in srgb, var(--brand) 45%, transparent); outline-offset:2px}
-
-    .hero-cards{ display:grid; gap:14px; grid-template-columns: repeat(2, minmax(0,1fr)); align-content:start }
-    @media (max-width: 600px){ .hero-cards{ grid-template-columns:1fr } }
-    .card{
-      background:var(--card); border:1px solid var(--line); border-radius: var(--radius); padding:16px; box-shadow: var(--shadow);
-    }
-    .mini-title{ font-weight:800; margin:0 0 8px }
-    .hint{ color: var(--muted); font-size:.93rem }
-
-    .qrs{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:10px }
-    @media (max-width: 600px){ .qrs{ grid-template-columns:1fr } }
-
-    .inline-icon{ width:22px; height:22px; vertical-align:-5px }
+    .hero{position:relative;overflow:hidden}
+    .hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:center;padding:78px 0}
+    .hero h1{font-size:46px;line-height:1.12;margin:0 0 14px;font-weight:900;letter-spacing:-.5px}
+    .hero p{font-size:18px;color:var(--muted);margin:0 0 22px}
+    .hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+    .hero .mock{background:linear-gradient(180deg,#ebf2ff,transparent 55%), var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+    .hero .kpis{display:flex;gap:16px;margin-top:14px;flex-wrap:wrap}
+    .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:13px;color:#1f2937}
 
     /* Sections */
-    section{ max-width:1160px; margin:0 auto; padding:64px 20px }
-    .section-title{ font-size: clamp(22px, 3.5vw, 34px); font-weight:900; margin:0 0 16px; letter-spacing:-.2px }
-    .section-sub{ color:var(--muted); margin:0 0 26px }
+    section{padding:70px 0;border-top:1px solid var(--line)}
+    h2{font-size:32px;letter-spacing:-.3px;margin:0 0 14px}
+    .sub{color:var(--muted);margin:0 0 22px}
+    .grid{display:grid;gap:18px}
+    .cols-3{grid-template-columns:repeat(3,1fr)}
+    .cols-2{grid-template-columns:repeat(2,1fr)}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:22px;box-shadow:var(--shadow)}
+    .card h3{margin:6px 0 8px;font-size:20px}
+    .dim{color:var(--muted)}
 
-    /* Problem/Solution cards */
-    .grid-3{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:16px }
-    @media (max-width: 900px){ .grid-3{ grid-template-columns:1fr } }
-    .card.hover{ transition: transform .2s ease, box-shadow .2s ease}
-    .card.hover:hover{ transform: translateY(-4px); box-shadow: 0 12px 30px rgba(2,6,23,.12) }
+    /* Demo modal */
+    .overlay{position:fixed;inset:0;background:rgba(15,23,42,.48);display:none;align-items:center;justify-content:center;padding:18px;z-index:100}
+    .overlay.open{display:flex}
+    .modal{background:var(--bg);border-radius:20px;max-width:1100px;width:100%;border:1px solid var(--line);box-shadow:0 20px 50px rgba(2,6,23,.18)}
+    .modal header{position:static;background:transparent;border:0}
+    .modal .body{display:grid;grid-template-columns:320px 1fr;gap:16px;padding:10px 16px 20px}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;border:1px solid var(--line);background:#fff}
+    .switch{position:relative;width:44px;height:26px;background:#e5e7eb;border-radius:999px;border:1px solid var(--line);cursor:pointer}
+    .switch:before{content:"";position:absolute;width:20px;height:20px;border-radius:50%;background:white;top:2px;left:2px;transition:.2s;box-shadow:0 2px 8px rgba(2,6,23,.15)}
+    .switch[data-on="true"]{background:#c7d2fe;border-color:#93c5fd}
+    .switch[data-on="true"]:before{left:22px}
+    .range{width:100%}
+    .list{display:grid;gap:12px}
+    .row{display:flex;align-items:center;gap:12px;justify-content:space-between;border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px 14px}
+    .row .name{font-weight:700}
+    .status{display:inline-flex;align-items:center;gap:6px;font-weight:800}
+    .ok{color:var(--ok)} .warn{color:var(--warn)} .bad{color:var(--bad)}
 
-    /* Tabs (How it works) */
-    .tabs{ background:var(--card); border:1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding:16px }
-    .tablist{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px }
-    .tab{
-      border:1px solid var(--line); background: var(--bg); padding:10px 14px; border-radius: 12px; cursor:pointer; font-weight:800;
+    /* Sticker poll */
+    .poll{display:flex;gap:12px}
+    .chip{flex:1;padding:14px;border:1px dashed var(--line);border-radius:14px;text-align:center;background:#fff;cursor:pointer}
+    .chip.active{border-style:solid;border-color:#94a3b8;background:#f8fafc}
+    .bar{height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden}
+    .bar>span{display:block;height:100%;background:var(--primary)}
+
+    /* Footer */
+    footer{padding:40px 0;border-top:1px solid var(--line);color:var(--muted)}
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .hero .wrap{grid-template-columns:1fr;gap:20px;padding:50px 0}
+      .hero h1{font-size:38px}
+      .modal .body{grid-template-columns:1fr}
+      .cols-3{grid-template-columns:1fr}
+      .cols-2{grid-template-columns:1fr}
     }
-    .tab[aria-selected="true"]{ background: color-mix(in srgb, var(--brand) 12%, transparent); border-color: color-mix(in srgb, var(--brand) 40%, var(--line)) }
-    .tabpanel{ display:none }
-    .tabpanel.active{ display:block }
-    .timeline{ display:grid; gap:12px }
-    .step{ display:grid; grid-template-columns: 42px 1fr; gap:12px; align-items:start; padding:12px; border:1px dashed var(--line); border-radius:12px; background: color-mix(in srgb, var(--card) 70%, transparent) }
-    .step-num{ width:42px; height:42px; border-radius:10px; display:grid; place-items:center; font-weight:900; background: linear-gradient(135deg, var(--brand), var(--brand-2)); color:#fff }
-
-    /* Features */
-    .grid-6{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:16px }
-    @media (max-width: 900px){ .grid-6{ grid-template-columns:1fr } }
-    .fea-title{ font-weight:800; margin:8px 0 6px }
-
-    /* Tech Architecture */
-    .arch{ background:var(--card); border:1px solid var(--line); border-radius: var(--radius); padding:16px; box-shadow: var(--shadow) }
-    .arch svg{ width:100%; height:auto; display:block }
-
-    /* KPI */
-    .kpis{ display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:14px }
-    @media (max-width: 900px){ .kpis{ grid-template-columns: repeat(2, minmax(0,1fr)) } }
-    .kpi{
-      text-align:center; background:var(--card); border:1px solid var(--line); border-radius: var(--radius); padding:20px; box-shadow: var(--shadow)
-    }
-    .kpi-val{ font-size: clamp(26px, 4vw, 36px); font-weight:900 }
-    .kpi-cap{ color: var(--muted) }
-
-    /* FAQ */
-    details{
-      background:var(--card); border:1px solid var(--line); border-radius: var(--radius); padding:14px 16px; box-shadow: var(--shadow)
-    }
-    details+details{ margin-top:10px }
-    summary{ cursor:pointer; font-weight:800 }
-    summary:focus-visible{ outline:3px solid color-mix(in srgb, var(--brand) 40%, transparent); border-radius:8px }
-
-    /* Contact */
-    form{ display:grid; gap:12px; max-width:720px }
-    .in{
-      display:block; width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--line);
-      background: var(--bg); color: var(--fg);
-    }
-    .in:focus-visible{ outline:3px solid color-mix(in srgb, var(--brand) 40%, transparent) }
-    .toast{
-      position: fixed; inset: auto 16px 16px auto; background: var(--fg); color: var(--bg);
-      padding: 12px 14px; border-radius:12px; box-shadow: var(--shadow); z-index:9999;
-      animation: toast .3s ease;
-    }
-    @keyframes toast{ from{opacity:0; transform: translateY(10px)} to{opacity:1; transform: none}}
-
-    footer{ border-top:1px solid var(--line); padding:24px 20px; color: var(--muted); text-align:center }
-
-    /* Utilities */
-    .muted{ color: var(--muted) }
-    .center{ text-align:center }
-    .chips{ display:flex; gap:8px; flex-wrap:wrap }
-    .chip{
-      font-size:.85rem; color: var(--muted); background: color-mix(in srgb, var(--brand) 10%, transparent);
-      border:1px solid color-mix(in srgb, var(--brand) 25%, transparent); border-radius:999px; padding:6px 10px
-    }
-    .mt-10{ margin-top:10px }
-    .mt-20{ margin-top:20px }
-    .mt-30{ margin-top:30px }
   </style>
 </head>
 <body>
-  <a class="skip-link" href="#main">본문 바로가기</a>
-  <header id="hdr" aria-label="메인 헤더">
-    <div class="nav" role="navigation" aria-label="주요 메뉴">
+  <header>
+    <div class="container nav">
       <div class="logo" aria-label="FoodBooth Filter">
-        <span class="logo-badge" aria-hidden="true">FB</span> FoodBooth Filter
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3c4.97 0 9 4.03 9 9 0 4.97-4.03 9-9 9S3 16.97 3 12C3 7.03 7.03 3 12 3Zm0 3.2a5.8 5.8 0 1 0 0 11.6 5.8 5.8 0 0 0 0-11.6Z" fill="#2d5cf6"/></svg>
+        FoodBooth Filter
       </div>
-      <button class="hamburger" id="hamburgerBtn" aria-label="메뉴 열기">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      <nav class="spacer">
-        <ul id="navList">
-          <li><a href="#features" data-i18n="features">Features</a></li>
-          <li><a href="#how" data-i18n="how">How it works</a></li>
-          <li><a href="#tech" data-i18n="tech">Tech</a></li>
-          <li><a href="#pilot" data-i18n="pilot">Pilot/KPI</a></li>
-          <li><a href="#faq" data-i18n="faq">FAQ</a></li>
-          <li><a href="#contact" data-i18n="contact">Contact</a></li>
+      <nav>
+        <ul>
+          <li><a href="#feature">특징</a></li>
+          <li><a href="#how">작동 방식</a></li>
+          <li><a href="#poc">현장 검증</a></li>
+          <li><a href="#contact">문의</a></li>
+          <li><button id="lang" class="btn ghost" aria-label="언어 전환">KR</button></li>
         </ul>
       </nav>
-      <select id="langSel" aria-label="언어 선택" style="margin-left:16px;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);font-weight:700;">
-        <option value="ko">한국어</option>
-        <option value="en">English</option>
-        <option value="ar">العربية</option>
-      </select>
-      <a class="cta-min" href="#demo" aria-label="데모 보기" data-i18n="demoBtn">데모 보기</a>
     </div>
   </header>
 
-  <script>
-    // 햄버거 메뉴 토글
-    document.addEventListener('DOMContentLoaded', function() {
-      const hamburgerBtn = document.getElementById('hamburgerBtn');
-      const navList = document.getElementById('navList');
-      hamburgerBtn.addEventListener('click', function() {
-        navList.classList.toggle('active');
-      });
-    });
-  </script>
-  <main id="main">
-    <!-- HERO -->
-    <section class="hero" id="home" aria-label="소개">
-      <div class="hero-wrap">
+  <main>
+    <section class="hero">
+      <div class="container wrap">
         <div>
-          <span class="eyebrow" data-i18n="heroEyebrow">QR → ✓/!/✕ · Halal · Vegan · Allergy · Alternative booths · No app</span>
-          <h1 class="headline" data-i18n="heroTitle">당신이 먹을 수 있는 음식만<br/><span class="muted" aria-hidden="true">Only what you can eat</span></h1>
-          <p class="subline" data-i18n="heroDesc">QR 스캔 한 번으로 내 식이 제한에 맞는 메뉴만 골라드립니다. 결과는 <b>✓ 가능 / ! 주의 / ✕ 불가</b>로 한눈에, 대체 부스까지 안내합니다.</p>
-          <div class="cta-row" role="group" aria-label="주요 행동">
-            <a class="btn" href="#demo" data-i18n="demoBtn">데모 보기</a>
-            <a class="btn outline" href="#survey" data-i18n="surveyBtn">30초 설문</a>
+          <span class="badge">Demo</span>
+          <h1>당신이 먹을 수 있는 음식만</h1>
+          <p>QR 한 번으로 <b>할랄·비건·알레르기·맵기</b>를 즉시 필터링하고, 각 부스를 <b>✓ 가능 · ! 주의 · ✕ 불가</b>로 표시합니다. 대체 부스도 자동 추천합니다. 앱 설치는 필요 없습니다.</p>
+          <div class="cta">
+            <button class="btn" id="openDemo">데모 열기</button>
+            <a class="btn ghost" href="#how">작동 방식 보기</a>
           </div>
-          <div class="chips mt-20" aria-label="신뢰 요소">
-            <span class="chip" data-i18n="chipResult">✓ 한눈에 결과</span>
-            <span class="chip" data-i18n="chipLang">🌐 다국어</span>
-            <span class="chip" data-i18n="chipAlt">🧭 대체 부스 추천</span>
+          <div class="kpis" aria-label="quick facts">
+            <div class="kpi">No App · QR to Web</div>
+            <div class="kpi">KR/EN/AR/ES 준비</div>
+            <div class="kpi">✓ / ! / ✕ 가시적 표시</div>
           </div>
         </div>
-        <div>
+        <div class="mock" aria-label="demo preview">
+          <div class="card" style="margin-bottom:12px">
+            <div class="pill"><strong>필터</strong> · Halal · Vegan · Allergy · Spicy</div>
+            <p class="dim" style="margin:8px 0 0">부스 리스트에 ✓ / ! / ✕가 바로 반영됩니다.</p>
+          </div>
+          <div class="grid" style="grid-template-columns:1fr;gap:10px">
+            <div class="row"><span class="name">Chicken BBQ</span> <span class="status bad">✕</span></div>
+            <div class="row"><span class="name">Soy Noodle</span> <span class="status ok">✓</span></div>
+            <div class="row"><span class="name">Seafood Pancake</span> <span class="status warn">!</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="feature">
+      <div class="container">
+        <h2>핵심 특징</h2>
+        <p class="sub">행사장 곳곳의 메뉴판을 뒤질 필요 없이, 한 화면에서 즉시 확인하고 이동합니다.</p>
+        <div class="grid cols-3">
           <div class="card">
-            <h3 class="mini-title">DEMO / SURVEY QR</h3>
-            <p class="hint">행사장에서 이렇게 보입니다. 설치 없이 웹으로 바로 열립니다.</p>
-            <div class="qrs" aria-label="QR 코드 예시">
-              <!-- Demo QR (placeholder SVG) -->
-              <svg viewBox="0 0 160 160" role="img" aria-label="DEMO QR placeholder" style="background:#fff;border-radius:12px;border:1px solid var(--line)">
-                <rect x="0" y="0" width="160" height="160" fill="white"/>
-                <rect x="12" y="12" width="44" height="44" fill="black"/><rect x="104" y="12" width="44" height="44" fill="black"/><rect x="12" y="104" width="44" height="44" fill="black"/>
-                <g fill="black">
-                  <rect x="70" y="12" width="12" height="12"/><rect x="86" y="12" width="12" height="12"/>
-                  <rect x="70" y="28" width="12" height="12"/><rect x="86" y="44" width="12" height="12"/>
-                  <rect x="70" y="44" width="12" height="12"/>
-                  <rect x="86" y="28" width="12" height="12"/>
-                  <rect x="58" y="70" width="12" height="12"/><rect x="74" y="70" width="12" height="12"/><rect x="90" y="70" width="12" height="12"/>
-                  <rect x="58" y="86" width="12" height="12"/><rect x="90" y="86" width="12" height="12"/>
-                  <rect x="58" y="102" width="12" height="12"/><rect x="74" y="102" width="12" height="12"/><rect x="90" y="102" width="12" height="12"/>
-                  <rect x="116" y="70" width="12" height="12"/><rect x="116" y="86" width="12" height="12"/><rect x="116" y="102" width="12" height="12"/>
-                </g>
-                <text x="50%" y="150" text-anchor="middle" fill="black" font-size="12" font-weight="700">DEMO QR</text>
-              </svg>
-              <!-- Survey QR (placeholder SVG) -->
-              <svg viewBox="0 0 160 160" role="img" aria-label="SURVEY QR placeholder" style="background:#fff;border-radius:12px;border:1px solid var(--line)">
-                <rect x="0" y="0" width="160" height="160" fill="white"/>
-                <rect x="12" y="12" width="44" height="44" fill="black"/><rect x="104" y="12" width="44" height="44" fill="black"/><rect x="12" y="104" width="44" height="44" fill="black"/>
-                <g fill="black">
-                  <rect x="70" y="18" width="12" height="12"/><rect x="86" y="18" width="12" height="12"/>
-                  <rect x="70" y="34" width="12" height="12"/><rect x="86" y="50" width="12" height="12"/>
-                  <rect x="70" y="50" width="12" height="12"/>
-                  <rect x="86" y="34" width="12" height="12"/>
-                  <rect x="58" y="76" width="12" height="12"/><rect x="74" y="76" width="12" height="12"/><rect x="90" y="76" width="12" height="12"/>
-                  <rect x="58" y="92" width="12" height="12"/><rect x="90" y="92" width="12" height="12"/>
-                  <rect x="58" y="108" width="12" height="12"/><rect x="74" y="108" width="12" height="12"/><rect x="90" y="108" width="12" height="12"/>
-                  <rect x="116" y="76" width="12" height="12"/><rect x="116" y="92" width="12" height="12"/><rect x="116" y="108" width="12" height="12"/>
-                </g>
-                <text x="50%" y="150" text-anchor="middle" fill="black" font-size="12" font-weight="700">SURVEY QR</text>
-              </svg>
+            <div class="pill">✓/!/✕ 즉시 표시</div>
+            <h3>원터치 필터링</h3>
+            <p class="dim">할랄·비건·알레르기·맵기(Spicy Level)를 한 번에 적용하여, 위험/주의/안전을 색상과 아이콘으로 명확히 표현합니다.</p>
+          </div>
+          <div class="card">
+            <div class="pill">Auto</div>
+            <h3>대체 부스 추천</h3>
+            <p class="dim">현재 부스가 불가(✕)일 때 가까운 ✓ 후보를 자동 추천해 동선을 줄여줍니다.</p>
+          </div>
+          <div class="card">
+            <div class="pill">A11y</div>
+            <h3>다국어 & 접근성</h3>
+            <p class="dim">KR/EN 우선, AR/ES 확장. 큰 글씨·명확한 대비·스크린리더 레이블로 누구나 쉽게.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="container">
+        <h2>작동 방식</h2>
+        <p class="sub">행사 당일, QR만 비추면 바로 웹앱이 열립니다.</p>
+        <div class="grid cols-2">
+          <div class="card">
+            <h3>사용자 플로우</h3>
+            <ol class="dim" style="padding-left:18px">
+              <li>행사 입구/지점의 QR 스캔</li>
+              <li>내 식단 설정: Halal / Vegan / 알레르기 / 맵기</li>
+              <li>부스 리스트에 ✓/!/✕ 적용</li>
+              <li>불가 시, 근처 ✓ 부스 자동 추천</li>
+            </ol>
+          </div>
+          <div class="card">
+            <h3>운영자/판매자 플로우</h3>
+            <ol class="dim" style="padding-left:18px">
+              <li>메뉴 성분/조리 정보 간단 입력(스프레드시트/폼)</li>
+              <li>현장 QR 포스터 출력</li>
+              <li>실시간 수정 시 즉시 반영</li>
+              <li>행사 종료 후 리포트로 인사이트 확인</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="poc">
+      <div class="container">
+        <h2>현장 검증(오늘)</h2>
+        <p class="sub">코엑스에서 외국인 관광객 인터뷰와 스티커 설문으로 문제와 니즈를 확인했습니다.</p>
+        <div class="grid cols-2">
+          <div class="card">
+            <h3>인사이트</h3>
+            <ul class="dim" style="padding-left:18px">
+              <li>한국에서 비건/할랄/알레르기 이용자가 먹을 수 있는 메뉴 탐색이 어렵다.</li>
+              <li>한국인의 “안 매움”과 외국인의 체감 매움이 달라 <b>맵기 표준화</b>가 필요하다.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>스티커 설문(현장 재현)</h3>
+            <p class="dim">오늘의 스티커 보드를 웹으로 재현했습니다. 클릭해 보세요(로컬 저장).</p>
+            <div class="poll" role="group" aria-label="어려움 정도">
+              <button class="chip" data-key="easy">쉬움</button>
+              <button class="chip" data-key="medium">보통</button>
+              <button class="chip" data-key="hard">어려움</button>
             </div>
-          </div>
-          <div class="chips mt-10">
-            <span class="chip">“✓ 가능 / ! 주의 / ✕ 불가”</span>
-            <span class="chip">No app required</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Problem & Solution -->
-    <section id="features" aria-label="문제와 해결">
-      <h2 class="section-title">문제 → 해결 (Problem → Solution)</h2>
-  <p class="section-sub" data-i18n="problemDesc">정보 부족 · 언어 장벽 · 운영 한계를 QR 웹앱과 자동 분석·번역, 대체 추천으로 해결합니다.</p>
-
-      <div class="grid-3" aria-label="문제">
-  <div class="card hover"><h3 class="mini-title" data-i18n="problem1">정보 부족</h3><p class="hint" data-i18n="problem1Desc">성분·조리공정·알레르겐 정보가 부족하여 안전 판단이 어려움</p></div>
-  <div class="card hover"><h3 class="mini-title" data-i18n="problem2">언어 장벽</h3><p class="hint" data-i18n="problem2Desc">외국인 관광객은 한글 메뉴판/구두 설명만으로 이해가 어려움</p></div>
-  <div class="card hover"><h3 class="mini-title" data-i18n="problem3">운영 한계</h3><p class="hint" data-i18n="problem3Desc">단기 행사 특성상 인증/교육/표준화에 비용·시간 부담</p></div>
-      </div>
-
-      <div class="grid-3 mt-20" aria-label="해결책">
-  <div class="card hover"><h3 class="mini-title" data-i18n="solution1">QR 웹앱</h3><p class="hint" data-i18n="solution1Desc">설치 없이 즉시 사용 · ✓/!/✕로 한눈에 결과</p></div>
-  <div class="card hover"><h3 class="mini-title" data-i18n="solution2">자동 분석·번역</h3><p class="hint" data-i18n="solution2Desc">문서 업로드→OCR·정규화·룰 평가·다국어 번역·배포</p></div>
-  <div class="card hover"><h3 class="mini-title" data-i18n="solution3">대체 추천 & 리포트</h3><p class="hint" data-i18n="solution3Desc">안전한 부스 추천, 퍼널/만족도 리포트로 개선</p></div>
-      </div>
-    </section>
-
-    <!-- How it works (Tabs) -->
-    <section id="how" aria-label="사용 방법">
-      <h2 class="section-title">How it works</h2>
-  <p class="section-sub" data-i18n="howDesc">두 플로우로 간단합니다.</p>
-
-      <div class="tabs" role="tablist" aria-label="플로우 탭">
-        <div class="tablist">
-          <button class="tab" role="tab" aria-selected="true" aria-controls="tab-owner" id="tabbtn-owner">사장님(점주/운영)</button>
-          <button class="tab" role="tab" aria-selected="false" aria-controls="tab-user" id="tabbtn-user">사용자</button>
-        </div>
-        <div id="tab-owner" class="tabpanel active" role="tabpanel" aria-labelledby="tabbtn-owner">
-          <div class="timeline">
-            <div class="step"><div class="step-num">1</div><div><b>포털 업로드</b> — 발주서/성분표/메뉴판 업로드(PDF·이미지·엑셀)</div></div>
-            <div class="step"><div class="step-num">2</div><div><b>OCR·정규화</b> — 표준 JSON으로 정제</div></div>
-            <div class="step"><div class="step-num">3</div><div><b>룰 평가 미리보기</b> — 할랄/비건/알레르겐 결과(✓/!/✕)</div></div>
-            <div class="step"><div class="step-num">4</div><div><b>검수·인증 등록</b> — 기관/번호/만료일 첨부</div></div>
-            <div class="step"><div class="step-num">5</div><div><b>배포</b> — 부스별 QR로 웹앱 공개</div></div>
-            <div class="step"><div class="step-num">6</div><div><b>신고 반영·리포트</b> — 예외 처리·재배포·지표 확인</div></div>
-          </div>
-        </div>
-        <div id="tab-user" class="tabpanel" role="tabpanel" aria-labelledby="tabbtn-user">
-          <div class="timeline">
-            <div class="step"><div class="step-num">1</div><div><b>QR 스캔</b> — 설치 없이 웹앱 열림</div></div>
-            <div class="step"><div class="step-num">2</div><div><b>프로필 선택</b> — 식이제한·언어·민감도</div></div>
-            <div class="step"><div class="step-num">3</div><div><b>결과 확인</b> — ✓ 가능 / ! 주의 / ✕ 불가 + 근거</div></div>
-            <div class="step"><div class="step-num">4</div><div><b>대체 추천·지도</b> — 안전도 높은 인근 부스 안내</div></div>
-            <div class="step"><div class="step-num">5</div><div><b>오류 신고</b> — 사진/메모 업로드</div></div>
-            <div class="step"><div class="step-num">6</div><div><b>캐시 스냅샷</b> — 네트워크 불안정 시에도 표시</div></div>
+            <div style="margin-top:10px" class="dim">결과</div>
+            <div class="bar" aria-hidden="true"><span id="bar" style="width:0%"></span></div>
+            <div id="poll-summary" class="dim" style="margin-top:8px">투표 없음</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Tech -->
-    <section id="tech" aria-label="기술">
-      <h2 class="section-title">Tech (요약)</h2>
-  <p class="section-sub" data-i18n="techDesc">Front: HTML/CSS/JS(PWA) · Back: FastAPI · DB: PostgreSQL/Redis/S3 · OCR/번역: PaddleOCR/CLOVA/Google · Security: PII 최소화/RBAC/감사로그</p>
-
-      <div class="arch" aria-label="아키텍처 다이어그램">
-        <!-- Simple architecture diagram (inline SVG) -->
-        <svg viewBox="0 0 920 300" role="img" aria-label="브라우저 ↔ API ↔ DB/스토리지 ↔ OCR/번역 흐름">
-          <defs>
-            <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
-              <stop offset="0" stop-color="var(--brand)"/>
-              <stop offset="1" stop-color="var(--brand-2)"/>
-            </linearGradient>
-          </defs>
-          <rect x="20" y="30" width="240" height="150" rx="16" ry="16" fill="none" stroke="var(--line)" stroke-width="2"/>
-          <text x="140" y="60" text-anchor="middle" fill="currentColor" font-weight="700">Browser (PWA)</text>
-          <text x="140" y="88" text-anchor="middle" fill="currentColor" font-size="12">QR · i18n · Offline cache</text>
-          <rect x="340" y="30" width="240" height="150" rx="16" ry="16" fill="none" stroke="var(--line)" stroke-width="2"/>
-          <text x="460" y="60" text-anchor="middle" fill="currentColor" font-weight="700">API (FastAPI)</text>
-          <text x="460" y="88" text-anchor="middle" fill="currentColor" font-size="12">Auth · Rules · Logs</text>
-          <rect x="660" y="20" width="240" height="80" rx="14" ry="14" fill="none" stroke="var(--line)" stroke-width="2"/>
-          <text x="780" y="50" text-anchor="middle" fill="currentColor" font-weight="700">DB (PostgreSQL/Redis)</text>
-          <rect x="660" y="120" width="240" height="80" rx="14" ry="14" fill="none" stroke="var(--line)" stroke-width="2"/>
-          <text x="780" y="150" text-anchor="middle" fill="currentColor" font-weight="700">Storage (S3)</text>
-
-          <rect x="420" y="210" width="160" height="70" rx="14" ry="14" fill="none" stroke="var(--line)" stroke-width="2"/>
-          <text x="500" y="240" text-anchor="middle" fill="currentColor" font-weight="700">OCR/Translate</text>
-          <text x="500" y="258" text-anchor="middle" fill="currentColor" font-size="12">Paddle · CLOVA · Google</text>
-
-          <!-- arrows -->
-          <path d="M260 105 L340 105" stroke="url(#g1)" stroke-width="3" marker-end="url(#arr)"/>
-          <path d="M580 90 L660 60" stroke="url(#g1)" stroke-width="3" marker-end="url(#arr)"/>
-          <path d="M580 120 L660 160" stroke="url(#g1)" stroke-width="3" marker-end="url(#arr)"/>
-          <path d="M460 180 L500 210" stroke="url(#g1)" stroke-width="3" marker-end="url(#arr)"/>
-          <path d="M500 210 L460 180" stroke="url(#g1)" stroke-width="3" marker-end="url(#arr)"/>
-          <defs>
-            <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-              <polygon points="0 0, 6 3, 0 6" fill="url(#g1)"/>
-            </marker>
-          </defs>
-        </svg>
-      </div>
-    </section>
-
-    <!-- Pilot & KPI -->
-    <section id="pilot" aria-label="파일럿과 KPI">
-      <h2 class="section-title">Pilot & KPI</h2>
-  <p class="section-sub" data-i18n="pilotDesc">MVP → 다국어 확장 → 지자체 표준/데이터 연동으로 확장합니다.</p>
-
-      <div class="kpis" aria-label="핵심 지표">
-        <div class="kpi">
-          <div class="kpi-val" data-target="30" data-prefix="" data-suffix="%↓">0</div>
-          <div class="kpi-cap">선택 실패율 감소</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-val" data-target="20" data-prefix="+" data-suffix="%p">0</div>
-          <div class="kpi-cap">대체 부스 전환</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-val" data-target="20" data-prefix="+" data-suffix="">0</div>
-          <div class="kpi-cap">NPS 상승</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-val" data-target="30" data-prefix="+" data-suffix="%">0</div>
-          <div class="kpi-cap">다국어 이해도</div>
+    <section>
+      <div class="container">
+        <h2>FAQ</h2>
+        <div class="grid cols-2">
+          <div class="card">
+            <h3>앱 설치가 필요한가요?</h3>
+            <p class="dim">아니요. QR로 웹앱이 바로 열립니다.</p>
+          </div>
+          <div class="card">
+            <h3>데이터 출처는?</h3>
+            <p class="dim">판매자/운영자가 입력한 성분·조리 정보에 기반하며, 현장에서 즉시 수정/반영이 가능합니다.</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Demo & Survey anchors -->
-    <section id="demo" aria-label="데모">
-      <h2 class="section-title">데모 보기 (Show Demo)</h2>
-  <p class="section-sub" data-i18n="demoDesc">실제 페이지 연결 전까지는 이 영역을 데모 안내/이미지로 사용하세요.</p>
-      <div class="card"><p class="hint">여기에 데모 링크/스크린샷/설명 등을 배치합니다.</p></div>
-    </section>
-
-    <section id="survey" aria-label="설문">
-      <h2 class="section-title">30초 설문 (Survey)</h2>
-  <p class="section-sub" data-i18n="surveyDesc">간단한 설문으로 서비스 개선에 참여해 주세요.</p>
-      <div class="card"><p class="hint">구글폼/설문 링크를 연결하세요.</p></div>
-    </section>
-
-    <!-- FAQ -->
-    <section id="faq" aria-label="자주 묻는 질문">
-      <h2 class="section-title">FAQ</h2>
-      <details>
-        <summary data-i18n="faq1Q">앱 설치가 필요한가요?</summary>
-        <p data-i18n="faq1A">아니요. QR 스캔 후 웹앱으로 바로 사용합니다 (PWA 캐시 지원).</p>
-      </details>
-      <details>
-        <summary data-i18n="faq2Q">다국어는 어떻게 지원하나요?</summary>
-        <p data-i18n="faq2A">핵심 경고/주의 문구 템플릿을 미리 번역·캐시합니다(한/영/중/일 + 아랍/말레이 옵션).</p>
-      </details>
-      <details>
-        <summary data-i18n="faq3Q">할랄 인증은 어떻게 확인하나요?</summary>
-        <p data-i18n="faq3A">점주 포털에서 기관/번호/만료일/증빙 스냅샷을 제출받아 검수 큐를 통해 표시합니다.</p>
-      </details>
-      <details>
-        <summary data-i18n="faq4Q">오탐/누락은 어떻게 처리하나요?</summary>
-        <p data-i18n="faq4A">현장 신고/사진이 예외 큐로 들어와 검수 후 즉시 재배포합니다.</p>
-      </details>
-      <details>
-        <summary data-i18n="faq5Q">개인정보는 수집하나요?</summary>
-        <p data-i18n="faq5A">식이 프로필은 디바이스 세션에 보관하며 식별 정보는 수집하지 않습니다(PII 최소화).</p>
-      </details>
-    </section>
-
-    <!-- Contact -->
-    <section id="contact" aria-label="연락처">
-      <h2 class="section-title">Contact</h2>
-  <p class="section-sub" data-i18n="contactDesc">파일럿/도입 문의를 남겨주세요. 빠르게 답변드리겠습니다.</p>
-      <form id="contactForm" novalidate>
-        <input class="in" type="text" name="name" placeholder="이름 / Name" aria-label="이름" required />
-        <input class="in" type="email" name="email" placeholder="이메일 / Email" aria-label="이메일" required />
-        <textarea class="in" name="msg" rows="5" placeholder="메시지 / Message" aria-label="메시지" required></textarea>
-        <div class="cta-row">
-          <button class="btn" type="submit">보내기 (Send)</button>
-          <a class="btn outline" href="#home" data-i18n="goTop">위로 가기</a>
+    <section id="contact">
+      <div class="container">
+        <h2>문의</h2>
+        <p class="sub">행사·축제에서 바로 써볼 수 있는 파트너를 찾고 있습니다.</p>
+        <div class="card">
+          <p style="margin:0 0 10px" class="dim">이메일: <a href="mailto:team@example.com">team@example.com</a> (예시 값을 프로젝트 메일로 교체하세요)</p>
+          <button class="btn" id="openDemo2">데모 다시 보기</button>
         </div>
-      </form>
+      </div>
     </section>
   </main>
 
   <footer>
-  <span data-i18n="footer">© FoodBooth Filter. All rights reserved. · “당신이 먹을 수 있는 음식만 / Only what you can eat”</span>
+    <div class="container">© <span id="yy"></span> FoodBooth Filter — “Only what you can eat.”</div>
   </footer>
 
-  <div id="sr-live" aria-live="polite" class="visually-hidden" style="position:absolute;left:-9999px"></div>
+  <!-- Demo Modal -->
+  <div class="overlay" id="demo">
+    <div class="modal">
+      <header>
+        <div class="container nav" style="height:60px">
+          <div class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#2d5cf6"/></svg>
+            Demo — 필터 적용 미리보기
+          </div>
+          <nav><ul><li><a href="#" id="closeDemo">닫기</a></li></ul></nav>
+        </div>
+      </header>
+      <div class="body">
+        <aside class="card" aria-label="필터">
+          <h3>내 식단 설정</h3>
+          <div class="grid" style="grid-template-columns:1fr auto;align-items:center;gap:10px">
+            <div>Halal</div><div class="switch" data-key="halal" data-on="false" tabindex="0" role="switch" aria-checked="false"></div>
+            <div>Vegan</div><div class="switch" data-key="vegan" data-on="false" tabindex="0" role="switch" aria-checked="false"></div>
+            <div>견과 알레르기</div><div class="switch" data-key="nuts" data-on="false" tabindex="0" role="switch" aria-checked="false"></div>
+            <div>유제품 알레르기</div><div class="switch" data-key="dairy" data-on="false" tabindex="0" role="switch" aria-checked="false"></div>
+            <div>갑각류 알레르기</div><div class="switch" data-key="shellfish" data-on="false" tabindex="0" role="switch" aria-checked="false"></div>
+          </div>
+          <div style="margin-top:14px">
+            <label for="spicy"><strong>맵기 허용</strong> (<span id="spicyLabel">보통</span>)</label>
+            <input id="spicy" class="range" type="range" min="0" max="3" step="1" value="2" />
+            <div class="dim" style="display:flex;justify-content:space-between"><span>순함</span><span>보통</span><span>매움</span><span>아주 매움</span></div>
+          </div>
+        </aside>
+        <section>
+          <div class="card" style="margin-bottom:12px">
+            <h3>부스 리스트</h3>
+            <p class="dim" style="margin:6px 0 0">조건에 따라 상태가 변합니다. ✕일 때는 아래에 대체 추천이 표시됩니다.</p>
+          </div>
+          <div id="list" class="list" aria-live="polite"></div>
+          <div class="card" id="alt" style="margin-top:14px;display:none">
+            <h3>대체 부스 추천</h3>
+            <div id="altList" class="list"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
 
   <script>
-    // Header shrink & active nav
-    const hdr = document.getElementById('hdr');
-    const navLinks = Array.from(document.querySelectorAll('header nav a'));
-    const sections = Array.from(document.querySelectorAll('main section[id]'));
-    const langSel = document.getElementById('langSel');
+    // Footer year
+    document.getElementById('yy').textContent = new Date().getFullYear();
 
-    // 다국어 텍스트 객체
+    // Language toggle (KR/EN). Minimal subset for demo text.
     const i18n = {
-      ko: {
-        features: '특징', how: '사용 방법', tech: '기술', pilot: '파일럿/KPI', faq: 'FAQ', contact: '연락처', demoBtn: '데모 보기', surveyBtn: '30초 설문',
-        heroEyebrow: 'QR → ✓/!/✕ · 할랄 · 비건 · 알레르기 · 대체 부스 · 앱 설치 불필요',
-        heroTitle: '당신이 먹을 수 있는 음식만', heroDesc: 'QR 스캔 한 번으로 내 식이 제한에 맞는 메뉴만 골라드립니다. 결과는 <b>✓ 가능 / ! 주의 / ✕ 불가</b>로 한눈에, 대체 부스까지 안내합니다.',
-        chipResult: '✓ 한눈에 결과', chipLang: '🌐 다국어', chipAlt: '🧭 대체 부스 추천',
-        problemDesc: '정보 부족 · 언어 장벽 · 운영 한계를 QR 웹앱과 자동 분석·번역, 대체 추천으로 해결합니다.',
-        problem1: '정보 부족', problem1Desc: '성분·조리공정·알레르겐 정보가 부족하여 안전 판단이 어려움',
-        problem2: '언어 장벽', problem2Desc: '외국인 관광객은 한글 메뉴판/구두 설명만으로 이해가 어려움',
-        problem3: '운영 한계', problem3Desc: '단기 행사 특성상 인증/교육/표준화에 비용·시간 부담',
-        solution1: 'QR 웹앱', solution1Desc: '설치 없이 즉시 사용 · ✓/!/✕로 한눈에 결과',
-        solution2: '자동 분석·번역', solution2Desc: '문서 업로드→OCR·정규화·룰 평가·다국어 번역·배포',
-        solution3: '대체 추천 & 리포트', solution3Desc: '안전한 부스 추천, 퍼널/만족도 리포트로 개선',
-        howDesc: '두 플로우로 간단합니다.',
-        techDesc: 'Front: HTML/CSS/JS(PWA) · Back: FastAPI · DB: PostgreSQL/Redis/S3 · OCR/번역: PaddleOCR/CLOVA/Google · Security: PII 최소화/RBAC/감사로그',
-        pilotDesc: 'MVP → 다국어 확장 → 지자체 표준/데이터 연동으로 확장합니다.',
-        demoDesc: '실제 페이지 연결 전까지는 이 영역을 데모 안내/이미지로 사용하세요.',
-        surveyDesc: '간단한 설문으로 서비스 개선에 참여해 주세요.',
-        faq1Q: '앱 설치가 필요한가요?', faq1A: '아니요. QR 스캔 후 웹앱으로 바로 사용합니다 (PWA 캐시 지원).',
-        faq2Q: '다국어는 어떻게 지원하나요?', faq2A: '핵심 경고/주의 문구 템플릿을 미리 번역·캐시합니다(한/영/중/일 + 아랍/말레이 옵션).',
-        faq3Q: '할랄 인증은 어떻게 확인하나요?', faq3A: '점주 포털에서 기관/번호/만료일/증빙 스냅샷을 제출받아 검수 큐를 통해 표시합니다.',
-        faq4Q: '오탐/누락은 어떻게 처리하나요?', faq4A: '현장 신고/사진이 예외 큐로 들어와 검수 후 즉시 재배포합니다.',
-        faq5Q: '개인정보는 수집하나요?', faq5A: '식이 프로필은 디바이스 세션에 보관하며 식별 정보는 수집하지 않습니다(PII 최소화).',
-        contactDesc: '파일럿/도입 문의를 남겨주세요. 빠르게 답변드리겠습니다.',
-        goTop: '위로 가기',
-        footer: '© FoodBooth Filter. All rights reserved. · “당신이 먹을 수 있는 음식만 / Only what you can eat”',
+      KR:{
+        heroTitle:'당신이 먹을 수 있는 음식만',
+        heroDesc:'QR 한 번으로 <b>할랄·비건·알레르기·맵기</b>를 즉시 필터링하고, 각 부스를 <b>✓ 가능 · ! 주의 · ✕ 불가</b>로 표시합니다. 대체 부스도 자동 추천합니다. 앱 설치는 필요 없습니다.',
+        demo:'데모 열기', how:'작동 방식 보기'
       },
-      en: {
-        features: 'Features', how: 'How it works', tech: 'Tech', pilot: 'Pilot/KPI', faq: 'FAQ', contact: 'Contact', demoBtn: 'Show Demo', surveyBtn: 'Survey',
-        heroEyebrow: 'QR → ✓/!/✕ · Halal · Vegan · Allergy · Alternative booths · No app',
-        heroTitle: 'Only what you can eat', heroDesc: 'Scan QR to instantly filter menus for your dietary needs. Results: <b>✓ Yes / ! Caution / ✕ No</b> at a glance, with alternative booths.',
-        chipResult: '✓ Instant results', chipLang: '🌐 Multilingual', chipAlt: '🧭 Alternative booths',
-        problemDesc: 'Lack of info · Language barrier · Operational limits solved by QR webapp, auto analysis/translation, and booth recommendation.',
-        problem1: 'Lack of info', problem1Desc: 'Hard to judge safety due to missing ingredient/cooking/allergen info',
-        problem2: 'Language barrier', problem2Desc: 'Foreigners struggle with Korean-only menus/explanations',
-        problem3: 'Operational limits', problem3Desc: 'Short-term events can’t afford certification/education/standardization',
-        solution1: 'QR Webapp', solution1Desc: 'Instant use, no install · ✓/!/✕ at a glance',
-        solution2: 'Auto analysis/translation', solution2Desc: 'Upload docs→OCR·normalize·rule eval·multilingual translation·publish',
-        solution3: 'Alternative & Report', solution3Desc: 'Recommend safe booths, improve via funnel/satisfaction report',
-        howDesc: 'Just two flows.',
-        techDesc: 'Front: HTML/CSS/JS(PWA) · Back: FastAPI · DB: PostgreSQL/Redis/S3 · OCR/Translation: PaddleOCR/CLOVA/Google · Security: Minimal PII/RBAC/Audit log',
-        pilotDesc: 'MVP → Multilingual → Expand via local gov standard/data integration.',
-        demoDesc: 'Use this area for demo info/images until real page is linked.',
-        surveyDesc: 'Help us improve with a quick survey.',
-        faq1Q: 'Do I need to install an app?', faq1A: 'No. Just scan QR and use the webapp (PWA cache supported).',
-        faq2Q: 'How is multilingual supported?', faq2A: 'Key warning/caution templates are pre-translated/cached (KR/EN/CN/JP + AR/MY options).',
-        faq3Q: 'How is Halal certification checked?', faq3A: 'Booth portal submits agency/number/expiry/proof snapshot, shown after review.',
-        faq4Q: 'How are errors/omissions handled?', faq4A: 'On-site reports/photos go to exception queue, re-published after review.',
-        faq5Q: 'Is personal info collected?', faq5A: 'Diet profile is stored in device session, no identifying info collected (minimal PII).',
-        contactDesc: 'Leave a pilot/adoption inquiry. We’ll reply quickly.',
-        goTop: 'Go to top',
-        footer: '© FoodBooth Filter. All rights reserved. · “Only what you can eat”',
-      },
-      ar: {
-        features: 'الميزات', how: 'كيف يعمل', tech: 'التقنية', pilot: 'تجريبي/KPI', faq: 'الأسئلة الشائعة', contact: 'اتصل', demoBtn: 'عرض العرض', surveyBtn: 'استبيان',
-        heroEyebrow: 'QR → ✓/!/✕ · حلال · نباتي · حساسية · أكشاك بديلة · بدون تطبيق',
-        heroTitle: 'فقط ما يمكنك أكله', heroDesc: 'امسح رمز QR لتصفية القوائم حسب احتياجاتك الغذائية فورًا. النتائج: <b>✓ نعم / ! انتبه / ✕ لا</b> بنظرة واحدة، مع أكشاك بديلة.',
-        chipResult: '✓ نتائج فورية', chipLang: '🌐 متعدد اللغات', chipAlt: '🧭 أكشاك بديلة',
-        problemDesc: 'نقص المعلومات · حاجز اللغة · حدود التشغيل يتم حلها عبر تطبيق الويب QR، التحليل/الترجمة التلقائية، وتوصية الأكشاك.',
-        problem1: 'نقص المعلومات', problem1Desc: 'يصعب الحكم على السلامة بسبب نقص معلومات المكونات/الطبخ/الحساسية',
-        problem2: 'حاجز اللغة', problem2Desc: 'الأجانب يواجهون صعوبة مع القوائم/الشرح الكوري فقط',
-        problem3: 'حدود التشغيل', problem3Desc: 'الأحداث قصيرة الأجل لا تستطيع تحمل الشهادات/التعليم/التوحيد القياسي',
-        solution1: 'تطبيق ويب QR', solution1Desc: 'استخدام فوري بدون تثبيت · ✓/!/✕ بنظرة واحدة',
-        solution2: 'تحليل/ترجمة تلقائية', solution2Desc: 'رفع المستندات→OCR·تطبيع·تقييم القواعد·ترجمة متعددة اللغات·نشر',
-        solution3: 'بديل & تقرير', solution3Desc: 'توصية الأكشاك الآمنة، التحسين عبر تقرير القمع/الرضا',
-        howDesc: 'فقط خطوتان.',
-        techDesc: 'الواجهة: HTML/CSS/JS(PWA) · الخلفية: FastAPI · قاعدة البيانات: PostgreSQL/Redis/S3 · OCR/الترجمة: PaddleOCR/CLOVA/Google · الأمان: الحد الأدنى من PII/RBAC/سجل التدقيق',
-        pilotDesc: 'MVP → متعدد اللغات → التوسع عبر معيار/تكامل بيانات الحكومة المحلية.',
-        demoDesc: 'استخدم هذه المنطقة لمعلومات/صور العرض حتى يتم ربط الصفحة الحقيقية.',
-        surveyDesc: 'ساعدنا في التحسين من خلال استبيان سريع.',
-        faq1Q: 'هل أحتاج لتثبيت تطبيق؟', faq1A: 'لا. فقط امسح رمز QR واستخدم تطبيق الويب (دعم ذاكرة التخزين المؤقت PWA).',
-        faq2Q: 'كيف يتم دعم متعدد اللغات؟', faq2A: 'يتم ترجمة/تخزين قوالب التحذير/الانتباه الرئيسية مسبقًا (KR/EN/CN/JP + خيارات AR/MY).',
-        faq3Q: 'كيف يتم التحقق من شهادة الحلال؟', faq3A: 'بوابة الأكشاك ترسل الوكالة/الرقم/تاريخ الانتهاء/دليل الصورة، تظهر بعد المراجعة.',
-        faq4Q: 'كيف يتم التعامل مع الأخطاء/السهو؟', faq4A: 'تقارير/صور الموقع تذهب إلى قائمة الاستثناءات، يتم إعادة النشر بعد المراجعة.',
-        faq5Q: 'هل يتم جمع معلومات شخصية؟', faq5A: 'يتم تخزين ملف النظام الغذائي في جلسة الجهاز، لا يتم جمع معلومات تعريفية (الحد الأدنى من PII).',
-        contactDesc: 'اترك استفسارًا عن العرض/التبني. سنرد بسرعة.',
-        goTop: 'العودة للأعلى',
-        footer: '© FoodBooth Filter. جميع الحقوق محفوظة. · “فقط ما يمكنك أكله”',
+      EN:{
+        heroTitle:'Only what you can eat',
+        heroDesc:'With one QR, instantly filter for <b>Halal · Vegan · Allergens · Spicy</b>. Each booth is labeled <b>✓ OK · ! Caution · ✕ Not allowed</b>, with automatic alternatives. No app required.',
+        demo:'Open Demo', how:'See how it works'
       }
     };
-    function setLang(lang){
-      document.documentElement.lang = lang;
-      document.querySelectorAll('[data-i18n]').forEach(el=>{
-        const key = el.getAttribute('data-i18n');
-        if(i18n[lang][key]) el.textContent = i18n[lang][key];
-      });
-    }
-    langSel.addEventListener('change', e=>{
-      setLang(langSel.value);
+    const langBtn = document.getElementById('lang');
+    langBtn.addEventListener('click',()=>{
+      const next = langBtn.textContent.trim()==='KR'?'EN':'KR';
+      langBtn.textContent = next;
+      const t = i18n[next];
+      document.querySelector('.hero h1').innerHTML = t.heroTitle;
+      document.querySelector('.hero p').innerHTML = t.heroDesc;
+      document.getElementById('openDemo').textContent = t.demo;
+      document.querySelector('.hero .cta a').textContent = t.how;
     });
-    setLang('ko');
 
-    // 기존 스크립트 ...existing code...
-    // Header shrink & active nav
-    const onScroll = () => {
-      if (window.scrollY > 8) hdr.classList.add('shrink'); else hdr.classList.remove('shrink');
-    };
-    onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
-    // IntersectionObserver for active nav
-    const obs = new IntersectionObserver((entries)=>{
-      entries.forEach(e=>{
-        if(e.isIntersecting){
-          const id = e.target.id;
-          navLinks.forEach(a=>a.classList.toggle('active', a.getAttribute('href') === '#'+id));
-        }
-      });
-    }, {rootMargin: '-40% 0px -50% 0px', threshold: 0.1});
-    sections.forEach(s=>obs.observe(s));
-    // Tabs (How it works)
-    const tabBtns = {
-      owner: document.getElementById('tabbtn-owner'),
-      user:  document.getElementById('tabbtn-user')
-    };
-    const tabPanels = {
-      owner: document.getElementById('tab-owner'),
-      user:  document.getElementById('tab-user')
-    };
-    function selectTab(key){
-      for (const k of Object.keys(tabBtns)){
-        tabBtns[k].setAttribute('aria-selected', String(k===key));
-        tabPanels[k].classList.toggle('active', k===key);
-      }
-      tabBtns[key].focus();
+    // Demo modal open/close
+    const openDemo = () => document.getElementById('demo').classList.add('open');
+    const closeDemo = () => document.getElementById('demo').classList.remove('open');
+    document.getElementById('openDemo').onclick = openDemo;
+    document.getElementById('openDemo2').onclick = openDemo;
+    document.getElementById('closeDemo').onclick = (e)=>{e.preventDefault();closeDemo();};
+    document.getElementById('demo').addEventListener('click',e=>{ if(e.target.id==='demo') closeDemo(); });
+
+    // Sample booths dataset
+    const booths = [
+      {name:'Chicken BBQ', pork:false, alcohol:true, seafood:false, usesFishOil:false, vegan:false, halal:false, spicy:3, allergens:['dairy'], cross:true},
+      {name:'Soy Noodle', pork:false, alcohol:false, seafood:false, usesFishOil:false, vegan:true, halal:true, spicy:1, allergens:['nuts'], cross:false},
+      {name:'Seafood Pancake', pork:false, alcohol:false, seafood:true, usesFishOil:true, vegan:false, halal:true, spicy:2, allergens:['shellfish'], cross:true},
+      {name:'Beef Bulgogi', pork:false, alcohol:true, seafood:false, usesFishOil:false, vegan:false, halal:false, spicy:1, allergens:['soy'], cross:false},
+      {name:'Tofu Bibimbap', pork:false, alcohol:false, seafood:false, usesFishOil:false, vegan:true, halal:true, spicy:2, allergens:['sesame'], cross:false},
+      {name:'Fried Shrimp', pork:false, alcohol:false, seafood:true, usesFishOil:false, vegan:false, halal:true, spicy:2, allergens:['shellfish','gluten'], cross:false},
+      {name:'Kimchi Stew', pork:true, alcohol:false, seafood:false, usesFishOil:false, vegan:false, halal:false, spicy:3, allergens:['fish'], cross:false}
+    ];
+
+    // User prefs state
+    const prefs = {halal:false, vegan:false, nuts:false, dairy:false, shellfish:false, spicy:2};
+
+    const spicyText = ['순함','보통','매움','아주 매움'];
+    const list = document.getElementById('list');
+    const altWrap = document.getElementById('alt');
+    const altList = document.getElementById('altList');
+
+    function statusFor(booth){
+      // Hard rules
+      if(prefs.vegan && !booth.vegan) return 'bad';
+      if(prefs.halal && (!booth.halal || booth.pork || booth.alcohol || booth.usesFishOil)) return 'bad';
+      if(prefs.nuts && (booth.allergens||[]).includes('nuts')) return 'bad';
+      if(prefs.dairy && (booth.allergens||[]).includes('dairy')) return 'bad';
+      if(prefs.shellfish && (booth.allergens||[]).includes('shellfish')) return 'bad';
+      if(booth.spicy > prefs.spicy) return 'bad';
+      // Caution
+      if(booth.cross || booth.alcohol || booth.usesFishOil) return 'warn';
+      // OK
+      return 'ok';
     }
-    tabBtns.owner.addEventListener('click', ()=>selectTab('owner'));
-    tabBtns.user .addEventListener('click', ()=>selectTab('user'));
-    // Keyboard support
-    document.querySelector('.tablist').addEventListener('keydown', (e)=>{
-      const order = ['owner','user'];
-      let idx = order.indexOf(document.activeElement.id.replace('tabbtn-',''));
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown'){ idx = (idx+1)%order.length; selectTab(order[idx]); }
-      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp'){   idx = (idx-1+order.length)%order.length; selectTab(order[idx]); }
-    });
-    // KPI count up
-    const formatVal = (v, pref, suff) => `${pref||''}${Math.round(v)}${suff||''}`;
-    const kpiEls = Array.from(document.querySelectorAll('.kpi-val'));
-    const kpiObs = new IntersectionObserver((entries)=>{
-      entries.forEach(entry=>{
-        if(!entry.isIntersecting) return;
-        const el = entry.target;
-        const target = Number(el.dataset.target || 0);
-        const pref   = el.dataset.prefix || '';
-        const suff   = el.dataset.suffix || '';
-        let start = 0;
-        const dur = 1100;
-        const t0 = performance.now();
-        const tick = (t)=>{
-          const p = Math.min(1, (t - t0)/dur);
-          el.textContent = formatVal(start + (target - start)*p, pref, suff);
-          if (p < 1) requestAnimationFrame(tick);
-        };
-        requestAnimationFrame(tick);
-        kpiObs.unobserve(el);
+
+    function render(){
+      list.innerHTML = '';
+      altList.innerHTML = '';
+      let hasX = false;
+      const okBooths = [];
+      booths.forEach(b=>{
+        const s = statusFor(b);
+        const row = document.createElement('div');
+        row.className = 'row';
+        row.innerHTML = `<div><div class="name">${b.name}</div><div class="dim">맵기: ${spicyText[b.spicy]}${b.cross? ' · 교차오염 가능':' '}</div></div>`+
+                        `<div class="status ${s}">${s==='ok'?'✓':(s==='warn'?'!':'✕')}</div>`;
+        list.appendChild(row);
+        if(s==='bad') hasX = true; else if(s==='ok') okBooths.push(b);
       });
-    }, {threshold: .6});
-    kpiEls.forEach(el=>kpiObs.observe(el));
-    // Smooth anchor focus
-    navLinks.forEach(a=>{
-      a.addEventListener('click', (e)=>{
-        const id = a.getAttribute('href');
-        if(id.startsWith('#') && id.length>1){
-          e.preventDefault();
-          const el = document.querySelector(id);
-          if (el){ el.scrollIntoView({behavior:'smooth', block:'start'}); el.setAttribute('tabindex','-1'); el.focus({preventScroll:true}); }
-        }
-      });
-    });
-    // Contact form demo validation
-    const form = document.getElementById('contactForm');
-    function toast(msg){
-      const t = document.createElement('div');
-      t.className = 'toast';
-      t.textContent = msg;
-      document.body.appendChild(t);
-      const sr = document.getElementById('sr-live'); sr.textContent = msg;
-      setTimeout(()=> t.remove(), 3000);
-    }
-    form.addEventListener('submit', (e)=>{
-      e.preventDefault();
-      const fd = new FormData(form);
-      const name = (fd.get('name')||'').toString().trim();
-      const email = (fd.get('email')||'').toString().trim();
-      const msg = (fd.get('msg')||'').toString().trim();
-      const okEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      if(!name || !okEmail || msg.length<4){
-        toast('입력 값을 확인해주세요. Please check your inputs.');
-        return;
+      if(hasX && okBooths.length){
+        altWrap.style.display = '';
+        okBooths.slice(0,3).forEach(b=>{
+          const r = document.createElement('div');
+          r.className='row';
+          r.innerHTML = `<span class="name">${b.name}</span><span class="status ok">✓</span>`;
+          altList.appendChild(r);
+        });
+      } else {
+        altWrap.style.display = 'none';
       }
-      form.reset();
-      toast('메시지가 제출되었습니다. Message sent (demo).');
+    }
+
+    // init switches
+    document.querySelectorAll('.switch').forEach(sw=>{
+      sw.addEventListener('click',()=>{
+        const key=sw.dataset.key; const v=!(sw.getAttribute('data-on')==='true');
+        sw.setAttribute('data-on',v); sw.setAttribute('aria-checked',String(v));
+        prefs[key]=v; render();
+      });
+      sw.addEventListener('keydown',e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); sw.click(); } });
     });
+    const spicy = document.getElementById('spicy');
+    const spicyLabel = document.getElementById('spicyLabel');
+    spicy.addEventListener('input',()=>{ prefs.spicy = Number(spicy.value); spicyLabel.textContent = spicyText[prefs.spicy]; render(); });
+
+    // Sticker poll
+    const chips = document.querySelectorAll('.chip');
+    const POLL_KEY = 'fbf_sticker_poll';
+    const poll = JSON.parse(localStorage.getItem(POLL_KEY) || '{"easy":0,"medium":0,"hard":0}');
+    const bar = document.getElementById('bar');
+    const summary = document.getElementById('poll-summary');
+    function paintPoll(){
+      const total = poll.easy+poll.medium+poll.hard;
+      const pct = total? Math.round(((poll.hard)/total)*100):0;
+      bar.style.width = pct+'%';
+      summary.textContent = total? `쉬움 ${poll.easy} · 보통 ${poll.medium} · 어려움 ${poll.hard}`: '투표 없음';
+    }
+    chips.forEach(c=>{
+      c.addEventListener('click',()=>{ poll[c.dataset.key]++; localStorage.setItem(POLL_KEY, JSON.stringify(poll)); chips.forEach(x=>x.classList.remove('active')); c.classList.add('active'); paintPoll(); });
+    });
+
+    // First paints
+    paintPoll();
+    render();
   </script>
 </body>
 </html>

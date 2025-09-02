@@ -1,0 +1,327 @@
+<!-- build: one-file-landing v2 (mobile-first · Toss-like) -->
+<!DOCTYPE html>
+<html lang="ko" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <title>FoodBooth Filter — 당신이 먹을 수 있는 음식만 | Only what you can eat</title>
+  <meta name="description" content="QR 한 번으로 할랄·비건·알레르기 즉시 필터링(✓/!/✕)하고 대체 부스까지 추천하는 행사·축제용 웹앱. No app required." />
+  <meta property="og:title" content="FoodBooth Filter" />
+  <meta property="og:description" content="QR → ✓/!/✕ · Halal · Vegan · Allergy · Alternative booths · No app" />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#3182f6" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop stop-color='%233182f6'/%3E%3Cstop stop-color='%2310b981' offset='1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect rx='14' width='64' height='64' fill='url(%23g)'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='system-ui,Segoe UI,Roboto' font-size='28' font-weight='900' fill='white'%3EFB%3C/text%3E%3C/svg%3E"/>
+  <style>
+    /* ========== Design tokens (Toss-like minimal) ========== */
+    :root{
+      --bg: #ffffff;
+      --fg: #111827;             /* gray-900 */
+      --muted: #6b7280;          /* gray-500 */
+      --brand: #3182f6;          /* Toss Blue */
+      --brand-2: #a5b4fc;        /* soft indigo tint */
+      --line: #e5e7eb;           /* gray-200 */
+      --card: #f9fafb;           /* gray-50 */
+      --radius: 14px;
+      --shadow: 0 10px 30px rgba(0,0,0,.06);
+      --container: 1024px;       /* tighter like toss */
+      --ring: color-mix(in srgb, var(--brand) 40%, transparent);
+      --safe-bottom: max(env(safe-area-inset-bottom), 16px);
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg: #0b1020;
+        --fg: #e5e7eb;
+        --muted: #9ca3af;
+        --brand: #76a8ff;
+        --brand-2: #60a5fa;
+        --line: #1f2937;
+        --card: #0f172a;
+        --shadow: 0 12px 28px rgba(0,0,0,.35);
+      }
+    }
+
+    /* ========== Base ========== */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font: clamp(15px, 1.6vw, 17px)/1.55 system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Apple SD Gothic Neo, "Malgun Gothic", "맑은 고딕", Arial, sans-serif;
+      color:var(--fg); background:var(--bg); text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+    }
+    img,svg{max-width:100%;height:auto}
+    a{color:inherit;text-decoration:none}
+    .visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+    /* ========== Header (ultra minimal) ========== */
+    header{position:sticky; top:0; z-index:50; backdrop-filter:saturate(1.1) blur(8px); background: color-mix(in srgb, var(--bg) 80%, transparent); border-bottom:1px solid var(--line)}
+    .progress{position:absolute; inset:0 auto auto 0; height:3px; background:linear-gradient(90deg,var(--brand),#10b981); transform-origin:0 50%; transform:scaleX(0)}
+    .nav{max-width:var(--container); margin:0 auto; padding:14px 18px; display:flex; align-items:center; gap:12px}
+    header.shrink .nav{padding:8px 18px}
+    .logo{display:flex; align-items:center; gap:10px; font-weight:900}
+    .logo-badge{display:grid; place-items:center; width:28px; height:28px; border-radius:9px; background:linear-gradient(135deg,var(--brand),#10b981); color:#fff; font-weight:900; box-shadow:var(--shadow)}
+    nav ul{display:flex; gap:14px; list-style:none; margin:0; padding:0}
+    nav a{padding:8px 10px; border-radius:10px; color:var(--muted)}
+    nav a.active{color:var(--fg); background: color-mix(in srgb,var(--brand) 12%, transparent)}
+    .spacer{flex:1}
+    .cta-min{display:inline-flex; align-items:center; gap:8px; padding:9px 14px; border-radius:12px; background:var(--fg); color:var(--bg); font-weight:800}
+
+    /* Mobile nav drawer */
+    .hamburger{display:none; width:40px; height:40px; border:0; background:transparent; cursor:pointer}
+    .hamburger span{display:block; width:24px; height:2.5px; margin:5px auto; background:#9ca3af; border-radius:2px; transition:.2s}
+    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+    .hamburger.open span:nth-child(2){opacity:0}
+    .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+    @media (max-width: 960px){
+      .hamburger{display:block}
+      nav.spacer{display:none}
+    }
+
+    /* ========== Hero (Toss-like: clean, whitespace, bold) ========== */
+    .hero{border-bottom:1px solid var(--line); background:radial-gradient(900px 400px at 100% -20%, color-mix(in srgb, var(--brand) 12%, transparent), transparent 60%)}
+    .contain{max-width:var(--container); margin:0 auto; padding: clamp(28px, 6vw, 56px) 18px}
+    .hero-grid{display:grid; grid-template-columns:1.05fr .95fr; gap:20px}
+    @media (max-width: 960px){.hero-grid{grid-template-columns:1fr; gap:14px}}
+    .eyebrow{display:inline-block; font-size:.88rem; color:var(--muted); background: color-mix(in srgb,var(--brand) 8%, transparent); padding:6px 10px; border:1px solid color-mix(in srgb,var(--brand) 18%, transparent); border-radius:999px}
+    .headline{margin:10px 0 8px; font-weight:900; line-height:1.12; font-size: clamp(32px, 7vw, 56px); letter-spacing:-.02em}
+    .subline{color:var(--muted); font-size: clamp(15px, 2.4vw, 18px)}
+
+    .btn{appearance:none; border:0; cursor:pointer; font-weight:900; border-radius:14px; padding:14px 16px; transition:.15s; position:relative}
+    .btn:focus-visible{outline:3px solid var(--ring); outline-offset:2px}
+    .btn-primary{background:var(--brand); color:#fff}
+    .btn-primary:hover{filter:brightness(1.05)}
+    .btn-ghost{background:transparent; color:var(--fg); border:1.5px solid var(--line)}
+
+    .qr-card{background:var(--card); border:1px solid var(--line); border-radius: var(--radius); box-shadow:var(--shadow); padding:16px}
+    .chips{display:flex; flex-wrap:wrap; gap:8px}
+    .chip{font-size:.85rem; color:var(--muted); background: color-mix(in srgb,var(--brand) 8%, transparent); border:1px solid color-mix(in srgb,var(--brand) 18%, transparent); padding:6px 10px; border-radius:999px}
+
+    /* ========== Sections ========== */
+    section{scroll-margin-top:80px}
+    .section-title{font-weight:900; font-size: clamp(22px, 3.2vw, 34px); letter-spacing:-.01em; margin:0 0 10px}
+    .section-sub{color:var(--muted); margin:0 0 22px}
+
+    .grid-3{display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:12px}
+    @media (max-width: 960px){.grid-3{grid-template-columns:1fr}}
+    .card{background:var(--card); border:1px solid var(--line); border-radius: var(--radius); padding:16px}
+    .card.hover{transition:.2s}
+    .card.hover:hover{transform: translateY(-3px)}
+
+    .tabs{background:var(--card); border:1px solid var(--line); border-radius: var(--radius); padding:12px}
+    .tablist{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px}
+    .tab{border:1px solid var(--line); padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:800; background:var(--bg)}
+    .tab[aria-selected="true"]{background: color-mix(in srgb,var(--brand) 10%, transparent); border-color: color-mix(in srgb,var(--brand) 40%, var(--line))}
+    .timeline{display:grid; gap:10px}
+    .step{display:grid; grid-template-columns: 40px 1fr; gap:10px; align-items:start; padding:12px; border:1px dashed var(--line); border-radius:12px; background: color-mix(in srgb, var(--card) 70%, transparent)}
+    .step-num{display:grid; place-items:center; width:40px; height:40px; border-radius:10px; background:linear-gradient(135deg,var(--brand),#10b981); color:#fff; font-weight:900}
+
+    .arch{background:var(--card); border:1px solid var(--line); border-radius: var(--radius); padding:16px}
+
+    .kpis{display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:12px}
+    @media (max-width: 960px){.kpis{grid-template-columns: repeat(2, minmax(0,1fr))}}
+    .kpi{background:var(--card); border:1px solid var(--line); border-radius: var(--radius); padding:18px; text-align:center; position:relative; overflow:hidden}
+    .kpi::after{content:""; position:absolute; inset:auto -30% -30% -30%; height:60%; background: radial-gradient(380px 120px at 50% 0, color-mix(in srgb, var(--brand) 16%, transparent), transparent 60%)}
+    .kpi-val{font-size: clamp(26px, 4vw, 36px); font-weight:900}
+    .kpi-cap{color:var(--muted)}
+
+    details{background:var(--card); border:1px solid var(--line); border-radius: var(--radius); padding:14px 16px}
+    details+details{margin-top:10px}
+
+    form{display:grid; gap:12px; max-width:720px}
+    .in{width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:var(--bg); color:var(--fg)}
+    .in:focus-visible{outline:3px solid var(--ring)}
+
+    footer{border-top:1px solid var(--line); color:var(--muted); padding:22px 18px; text-align:center}
+
+    /* Mobile bottom dock CTA */
+    .dock{position:fixed; left:0; right:0; bottom:0; padding:10px 14px calc(var(--safe-bottom)); background: color-mix(in srgb,var(--bg) 92%, transparent); backdrop-filter: blur(8px); border-top:1px solid var(--line); display:flex; gap:8px; z-index:40}
+    .dock .btn{flex:1}
+    @media (min-width: 961px){.dock{display:none}}
+
+    /* Back to top */
+    #toTop{position:fixed; right:14px; bottom:calc(64px + var(--safe-bottom)); z-index:45; opacity:0; pointer-events:none; transition:.2s}
+    #toTop.show{opacity:1; pointer-events:auto}
+
+    @media (prefers-reduced-motion: reduce){*{transition:none!important; animation:none!important}}
+  </style>
+</head>
+<body>
+  <a class="visually-hidden" href="#main">본문 바로가기</a>
+  <header id="hdr" aria-label="메인 헤더">
+    <div class="progress" id="progress" aria-hidden="true"></div>
+    <div class="nav" role="navigation" aria-label="주요 메뉴">
+      <div class="logo" aria-label="FoodBooth Filter">
+        <span class="logo-badge" aria-hidden="true">FB</span> FoodBooth Filter
+      </div>
+      <button class="hamburger" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false"><span></span><span></span><span></span></button>
+      <nav class="spacer">
+        <ul id="navList">
+          <li><a href="#features" data-i18n="features">Features</a></li>
+          <li><a href="#how" data-i18n="how">How it works</a></li>
+          <li><a href="#tech" data-i18n="tech">Tech</a></li>
+          <li><a href="#pilot" data-i18n="pilot">Pilot/KPI</a></li>
+          <li><a href="#faq" data-i18n="faq">FAQ</a></li>
+          <li><a href="#contact" data-i18n="contact">Contact</a></li>
+        </ul>
+      </nav>
+      <select id="langSel" aria-label="언어 선택" style="padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font-weight:700;">
+        <option value="ko">한국어</option>
+        <option value="en">English</option>
+        <option value="ar">العربية</option>
+      </select>
+      <a class="cta-min" href="#demo" data-i18n="demoBtn" aria-label="데모 보기">데모 보기</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="hero" id="home" aria-label="소개">
+      <div class="contain hero-grid">
+        <div>
+          <span class="eyebrow" data-i18n="heroEyebrow">QR → ✓/!/✕ · Halal · Vegan · Allergy · Alternative booths · No app</span>
+          <h1 class="headline" data-i18n="heroTitle">당신이 먹을 수 있는 음식만<br><span class="muted" aria-hidden="true">Only what you can eat</span></h1>
+          <p class="subline" data-i18n="heroDesc">QR 스캔 한 번으로 내 식이 제한에 맞는 메뉴만 골라드립니다. 결과는 <b>✓ 가능 / ! 주의 / ✕ 불가</b>로 한눈에, 대체 부스까지 안내합니다.</p>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:16px" role="group">
+            <a class="btn btn-primary" href="#demo" data-i18n="demoBtn">데모 보기</a>
+            <a class="btn btn-ghost" href="#survey" data-i18n="surveyBtn">30초 설문</a>
+            <button class="btn btn-ghost" id="shareBtn" type="button" aria-label="페이지 공유">Share</button>
+          </div>
+          <div class="chips" style="margin-top:14px" aria-label="신뢰 요소">
+            <span class="chip" data-i18n="chipResult">✓ 한눈에 결과</span>
+            <span class="chip" data-i18n="chipLang">🌐 다국어</span>
+            <span class="chip" data-i18n="chipAlt">🧭 대체 부스 추천</span>
+          </div>
+        </div>
+        <div>
+          <div class="qr-card">
+            <h3 class="mini-title" style="margin:0 0 6px; font-weight:800">DEMO / SURVEY QR</h3>
+            <p class="section-sub" style="margin:0 0 10px">행사장에서 이렇게 보입니다. 설치 없이 웹으로 바로 열립니다.</p>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px" aria-label="QR 코드 예시">
+              <!-- Demo QR placeholder -->
+              <svg viewBox="0 0 160 160" role="img" aria-label="DEMO QR placeholder" style="background:#fff;border-radius:12px;border:1px solid var(--line)">
+                <rect x="0" y="0" width="160" height="160" fill="white"/>
+                <rect x="12" y="12" width="44" height="44" fill="black"/><rect x="104" y="12" width="44" height="44" fill="black"/><rect x="12" y="104" width="44" height="44" fill="black"/>
+                <g fill="black">
+                  <rect x="70" y="12" width="12" height="12"/><rect x="86" y="12" width="12" height="12"/>
+                  <rect x="70" y="28" width="12" height="12"/><rect x="86" y="44" width="12" height="12"/>
+                  <rect x="70" y="44" width="12" height="12"/>
+                  <rect x="86" y="28" width="12" height="12"/>
+                  <rect x="58" y="70" width="12" height="12"/><rect x="74" y="70" width="12" height="12"/><rect x="90" y="70" width="12" height="12"/>
+                  <rect x="58" y="86" width="12" height="12"/><rect x="90" y="86" width="12" height="12"/>
+                  <rect x="58" y="102" width="12" height="12"/><rect x="74" y="102" width="12" height="12"/><rect x="90" y="102" width="12" height="12"/>
+                  <rect x="116" y="70" width="12" height="12"/><rect x="116" y="86" width="12" height="12"/><rect x="116" y="102" width="12" height="12"/>
+                </g>
+                <text x="50%" y="150" text-anchor="middle" fill="black" font-size="12" font-weight="700">DEMO QR</text>
+              </svg>
+              <!-- Survey QR placeholder -->
+              <svg viewBox="0 0 160 160" role="img" aria-label="SURVEY QR placeholder" style="background:#fff;border-radius:12px;border:1px solid var(--line)">
+                <rect x="0" y="0" width="160" height="160" fill="white"/>
+                <rect x="12" y="12" width="44" height="44" fill="black"/><rect x="104" y="12" width="44" height="44" fill="black"/><rect x="12" y="104" width="44" height="44" fill="black"/>
+                <g fill="black">
+                  <rect x="70" y="18" width="12" height="12"/><rect x="86" y="18" width="12" height="12"/>
+                  <rect x="70" y="34" width="12" height="12"/><rect x="86" y="50" width="12" height="12"/>
+                  <rect x="70" y="50" width="12" height="12"/>
+                  <rect x="86" y="34" width="12" height="12"/>
+                  <rect x="58" y="76" width="12" height="12"/><rect x="74" y="76" width="12" height="12"/><rect x="90" y="76" width="12" height="12"/>
+                  <rect x="58" y="92" width="12" height="12"/><rect x="90" y="92" width="12" height="12"/>
+                  <rect x="58" y="108" width="12" height="12"/><rect x="74" y="108" width="12" height="12"/><rect x="90" y="108" width="12" height="12"/>
+                  <rect x="116" y="76" width="12" height="12"/><rect x="116" y="92" width="12" height="12"/><rect x="116" y="108" width="12" height="12"/>
+                </g>
+                <text x="50%" y="150" text-anchor="middle" fill="black" font-size="12" font-weight="700">SURVEY QR</text>
+              </svg>
+            </div>
+          </div>
+          <div class="chips" style="margin-top:10px">
+            <span class="chip">“✓ 가능 / ! 주의 / ✕ 불가”</span>
+            <span class="chip">No app required</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" aria-label="문제와 해결">
+      <div class="contain">
+        <h2 class="section-title">문제 → 해결 (Problem → Solution)</h2>
+        <p class="section-sub" data-i18n="problemDesc">정보 부족 · 언어 장벽 · 운영 한계를 QR 웹앱과 자동 분석·번역, 대체 추천으로 해결합니다.</p>
+        <div class="grid-3" aria-label="문제">
+          <div class="card hover"><h3 class="mini-title" data-i18n="problem1" style="margin:0 0 6px; font-weight:800">정보 부족</h3><p class="section-sub" data-i18n="problem1Desc">성분·조리공정·알레르겐 정보가 부족하여 안전 판단이 어려움</p></div>
+          <div class="card hover"><h3 class="mini-title" data-i18n="problem2" style="margin:0 0 6px; font-weight:800">언어 장벽</h3><p class="section-sub" data-i18n="problem2Desc">외국인 관광객은 한글 메뉴판/구두 설명만으로 이해가 어려움</p></div>
+          <div class="card hover"><h3 class="mini-title" data-i18n="problem3" style="margin:0 0 6px; font-weight:800">운영 한계</h3><p class="section-sub" data-i18n="problem3Desc">단기 행사 특성상 인증/교육/표준화에 비용·시간 부담</p></div>
+        </div>
+        <div class="grid-3" style="margin-top:14px" aria-label="해결책">
+          <div class="card hover"><h3 class="mini-title" data-i18n="solution1" style="margin:0 0 6px; font-weight:800">QR 웹앱</h3><p class="section-sub" data-i18n="solution1Desc">설치 없이 즉시 사용 · ✓/!/✕로 한눈에 결과</p></div>
+          <div class="card hover"><h3 class="mini-title" data-i18n="solution2" style="margin:0 0 6px; font-weight:800">자동 분석·번역</h3><p class="section-sub" data-i18n="solution2Desc">문서 업로드→OCR·정규화·룰 평가·다국어 번역·배포</p></div>
+          <div class="card hover"><h3 class="mini-title" data-i18n="solution3" style="margin:0 0 6px; font-weight:800">대체 추천 & 리포트</h3><p class="section-sub" data-i18n="solution3Desc">안전한 부스 추천, 퍼널/만족도 리포트로 개선</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how" aria-label="사용 방법">
+      <div class="contain">
+        <h2 class="section-title">How it works</h2>
+        <p class="section-sub" data-i18n="howDesc">두 플로우로 간단합니다.</p>
+        <div class="tabs" role="tablist" aria-label="플로우 탭">
+          <div class="tablist">
+            <button class="tab" role="tab" aria-selected="true" aria-controls="tab-owner" id="tabbtn-owner">사장님(점주/운영)</button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="tab-user" id="tabbtn-user">사용자</button>
+          </div>
+          <div id="tab-owner" class="tabpanel active" role="tabpanel" aria-labelledby="tabbtn-owner">
+            <div class="timeline">
+              <div class="step"><div class="step-num">1</div><div><b>포털 업로드</b> — 발주서/성분표/메뉴판 업로드(PDF·이미지·엑셀)</div></div>
+              <div class="step"><div class="step-num">2</div><div><b>OCR·정규화</b> — 표준 JSON으로 정제</div></div>
+              <div class="step"><div class="step-num">3</div><div><b>룰 평가 미리보기</b> — 할랄/비건/알레르겐 결과(✓/!/✕)</div></div>
+              <div class="step"><div class="step-num">4</div><div><b>검수·인증 등록</b> — 기관/번호/만료일 첨부</div></div>
+              <div class="step"><div class="step-num">5</div><div><b>배포</b> — 부스별 QR로 웹앱 공개</div></div>
+              <div class="step"><div class="step-num">6</div><div><b>신고 반영·리포트</b> — 예외 처리·재배포·지표 확인</div></div>
+            </div>
+          </div>
+          <div id="tab-user" class="tabpanel" role="tabpanel" aria-labelledby="tabbtn-user" hidden>
+            <div class="timeline">
+              <div class="step"><div class="step-num">1</div><div><b>QR 스캔</b> — 설치 없이 웹앱 열림</div></div>
+              <div class="step"><div class="step-num">2</div><div><b>프로필 선택</b> — 식이제한·언어·민감도</div></div>
+              <div class="step"><div class="step-num">3</div><div><b>결과 확인</b> — ✓ 가능 / ! 주의 / ✕ 불가 + 근거</div></div>
+              <div class="step"><div class="step-num">4</div><div><b>대체 추천·지도</b> — 안전도 높은 인근 부스 안내</div></div>
+              <div class="step"><div class="step-num">5</div><div><b>오류 신고</b> — 사진/메모 업로드</div></div>
+              <div class="step"><div class="step-num">6</div><div><b>캐시 스냅샷</b> — 네트워크 불안정 시에도 표시</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tech" aria-label="기술">
+      <div class="contain">
+        <h2 class="section-title">Tech (요약)</h2>
+        <p class="section-sub" data-i18n="techDesc">Front: HTML/CSS/JS(PWA) · Back: FastAPI · DB: PostgreSQL/Redis/S3 · OCR/번역: PaddleOCR/CLOVA/Google · Security: PII 최소화/RBAC/감사로그</p>
+        <div class="arch" aria-label="아키텍처 다이어그램">
+          <svg viewBox="0 0 920 300" role="img" aria-label="브라우저 ↔ API ↔ DB/스토리지 ↔ OCR/번역 흐름">
+            <defs><linearGradient id="g1" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="var(--brand)"/><stop offset="1" stop-color="#10b981"/></linearGradient></defs>
+            <rect x="20" y="30" width="240" height="150" rx="16" ry="16" fill="none" stroke="var(--line)" stroke-width="2"/>
+            <text x="140" y="60" text-anchor="middle" fill="currentColor" font-weight="700">Browser (PWA)</text>
+            <text x="140" y="88" text-anchor="middle" fill="currentColor" font-size="12">QR · i18n · Offline cache</text>
+            <rect x="340" y="30" width="240" height="150" rx="16" ry="16" fill="none" stroke="var(--line)" stroke-width="2"/>
+            <text x="460" y="60" text-anchor="middle" fill="currentColor" font-weight="700">API (FastAPI)</text>
+            <text x="460" y="88" text-anchor="middle" fill="currentColor" font-size="12">Auth · Rules · Logs</text>
+            <rect x="660" y="20" width="240" height="80" rx="14" ry="14" fill="none" stroke="var(--line)" stroke-width="2"/>
+            <text x="780" y="50" text-anchor="middle" fill="currentColor" font-weight="700">DB (PostgreSQL/Redis)</text>
+            <rect x="660" y="120" width="240" height="80" rx="14" ry="14" fill="none" stroke="var(--line)" stroke-width="2"/>
+            <text x="780" y="150" text-anchor="middle" fill="currentColor" font-weight="700">Storage (S3)</text>
+            <rect x="420" y="210" width="160" height="70" rx="14" ry="14" fill="none" stroke="var(--line)" stroke-width="2"/>
+            <text x="500" y="240" text-anchor="middle" fill="currentColor" font-weight="700">OCR/Translate</text>
+            <text x="500" y="258" text-anchor="middle" fill="currentColor" font-size="12">Paddle · CLOVA · Google</text>
+            <path d="M260 105 L340 105" stroke="url(#g1)" stroke-width="3" marker-end="url(#arr)"/>
+            <path d="M580 90 L660 60" stroke="url(#g1)" stroke-width="3" marker-end="url(#arr)"/>
+            <path d="M580 120 L660 160" stroke="url(#g1)" stroke-width="3" marker-end="url(#arr)"/>
+            <path d="M460 180 L500 210" stroke="url(#g1)" stroke-width="3" marker-end="url(#arr)"/>
+            <path d="M500 210 L460 180" stroke="url(#g1)" stroke-width="3" marker-end="url(#arr)"/>
+            <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><polygon points="0 0, 6 3, 0 6" fill="url(#g1)"/></marker></defs>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section id="pilot" aria-label="파일럿과 KPI">
+      <div class="contain">
+        <h2 class="section-title">Pilot & KPI</h2>
+        <p class="section-sub" data-i18n="pilotDesc">MVP → 다국어 확장 → 지자체 표준/데이터 연동으로 확장합니다.</p>
+        <div class="k
